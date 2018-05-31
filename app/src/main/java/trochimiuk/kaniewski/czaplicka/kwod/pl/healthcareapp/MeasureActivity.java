@@ -19,22 +19,36 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
-
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * By skończyć działanie tej klasy potrzebne jest przechowywanie gdzieś w pliku kilku wartości
+ *
+ *  tablicy intów o pojemności 5 - private int[] pomiary = new int[5];
+ *  flagi boolean przypominajkaBylaWlaczona
+ *  int godzina //uwaga nie pomylic z EditText godziny
+ *  int minuta // uwaga jw
+ *
+ * na samym dole nalezy uzupelnic funkcje init, po nadaniu przechowywanych wartosci należy sie modlic zeby dzialalo xd
+ * trzeba tez uzupenil funkcje wykonaj zrzut pamieci. Chodzi o to by w tej funkcji zapisac do pliku wymieniona tam wartosci.
+ *
+ */
+
 public class MeasureActivity extends AppCompatActivity {
     private final int  ILOSC_POMIAROW = 5;
     private int[] pomiary = new int[5];
+    private boolean przypominajkaBylaWlaczona = false;
     private GraphView graph;
     private EditText wynik;
+    private EditText godziny;
+    private EditText minuty;
     private Button dodajPomiar;
     private Date d1;
     private Date d2;
@@ -42,6 +56,8 @@ public class MeasureActivity extends AppCompatActivity {
     private Date d4;
     private Date d5;
     private Calendar cal;
+    private int godzina;
+    private int minuta ;
 private Switch przelacznikPrzypomnienia;
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
@@ -58,9 +74,10 @@ private Switch przelacznikPrzypomnienia;
         graph = (GraphView) findViewById(R.id.graph);
         cal = Calendar.getInstance();
         przelacznikPrzypomnienia = (Switch) findViewById(R.id.przelacznikPrzypomnienia);
-        graphInitialize();
-        graphConfig();
+        godziny = (EditText)    findViewById(R.id.hours);
+        minuty = (EditText) findViewById(R.id.minutes);
 
+        init();
 
         przelacznikPrzypomnienia.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
@@ -159,11 +176,11 @@ private Switch przelacznikPrzypomnienia;
         d5 = cal.getTime();
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(d1, 0),
-                new DataPoint(d2, 0),
-                new DataPoint(d3, 0),
-                new DataPoint(d4, 0),
-                new DataPoint(d5, 0)
+                new DataPoint(d1, pomiary[0]),
+                new DataPoint(d2, pomiary[1]),
+                new DataPoint(d3, pomiary[2]),
+                new DataPoint(d4, pomiary[3]),
+                new DataPoint(d5, pomiary[4])
 
         });
         graph.addSeries(series);
@@ -172,10 +189,28 @@ private Switch przelacznikPrzypomnienia;
         if (czyWlaczyc)
         {
             //TODO pobieranie godziny
-            int godzina = 21;
-            int minuta = 22;
-            wyswietlPowiadomienie("Uruchomiono przypominajke");
-            scheduler(godzina,minuta);
+            if(Integer.parseInt(godziny.getText().toString())>23 || Integer.parseInt(godziny.getText().toString()) <0)
+            {
+                Toast toast = Toast.makeText(getApplicationContext(), "Niepoprawnie wpisana godzina", Toast.LENGTH_SHORT);
+                toast.show();
+                godziny.setText("");
+                przelacznikPrzypomnienia.setChecked(false);
+
+            }
+            else if( Integer.parseInt(minuty.getText().toString())> 59 ||  Integer.parseInt(minuty.getText().toString()) <0 )
+            {
+                Toast toast = Toast.makeText(getApplicationContext(), "Niepoprawnie wpisana minuta", Toast.LENGTH_SHORT);
+                toast.show();
+                minuty.setText("");
+                przelacznikPrzypomnienia.setChecked(false);
+            }
+            else
+            {
+                godzina = Integer.parseInt(godziny.getText().toString());
+                minuta = Integer.parseInt(minuty.getText().toString());
+                wyswietlPowiadomienie("Uruchomiono przypominajke");
+                scheduler(godzina, minuta);
+            }
         }
         else
         {
@@ -211,29 +246,74 @@ private Switch przelacznikPrzypomnienia;
     // wykonuje sie to cyklicznie co dobe o podanej godzinie
     void scheduler(int hour, int minute)
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
+        Calendar my_calendar = Calendar.getInstance();
+        my_calendar.setTimeInMillis(System.currentTimeMillis());
+        my_calendar.set(Calendar.HOUR, hour);
+        my_calendar.set(Calendar.MINUTE, minute);
+//my_calendar.set
 
-
-        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-         intent = new Intent(this, DoMeasureActivity.class);
-         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+//        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+//         intent = new Intent(this, DoMeasureActivity.class);
+//         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         long currentTime = System.currentTimeMillis();
         long oneMinute = 5 * 1000;
         alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(),
+                my_calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,
                 pendingIntent);
+        przypominajkaBylaWlaczona = true;
+        wykonajZrzutPamieci();
 
     }
 
 void schedulerStop()
 {
     alarmManager.cancel(pendingIntent);
+}
+void switchAndSchedulerConfig()
+{
+    alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    intent = new Intent(this, DoMeasureActivity.class);
+    pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+    if(przypominajkaBylaWlaczona)
+   {
+       //scheduler wciąż jest wlaczony zgodnie z poprzednimi ustawieniami
+       przelacznikPrzypomnienia.setChecked(true);
+       godziny.setText(godzina);
+       minuty.setText(minuta);
+
+   }
+   else
+   {
+       schedulerStop();
+       przelacznikPrzypomnienia.setChecked(false);
+   }
+}
+void init()
+{
+
+  //  pomiary = //wartosc z pliku
+  //  przypominajkaBylaWlaczona = //wartosc z pliku
+  //  godzina =
+  //  minuta =
+
+    graphInitialize();
+    graphConfig();
+    switchAndSchedulerConfig();
+
+}
+void wykonajZrzutPamieci()
+{
+    //tutaj trzeba zrobic zrzucanie do pliku
+
+    //  = pomiary
+    //  = przypominajkaBylaWlaczona
+    //  = godzina
+    //  = minuta
 }
 
 
