@@ -20,7 +20,8 @@
         <activity android:name=".MeasureActivity" />
         <activity android:name=".AppointmentActivity" />
         <activity android:name=".Medicine.NewMedicineActivity" />
-        <activity android:name=".Medicine.NewMedicineInDBActivity"></activity>
+        <activity android:name=".Medicine.NewMedicineInDBActivity" />
+        <activity android:name=".DoMeasureActivity"></activity>
     </application>
 
 </manifest>
