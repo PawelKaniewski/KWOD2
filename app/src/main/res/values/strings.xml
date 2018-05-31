@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Health Care App</string>
+    <string name="appointmentBtn">Wizyty</string>
+    <string name="medicineBtn">Leki</string>
+    <string name="measureBtn">Pomiary</string>
+    <string name="addAppBtn">Dodaj wizytę</string>
 </resources>
