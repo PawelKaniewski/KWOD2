@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class DoMeasureActivity extends AppCompatActivity {
 
@@ -44,5 +45,7 @@ public class DoMeasureActivity extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, mBuilder.build());
 
+        Toast toast = Toast.makeText(getApplicationContext(), "Wykonaj pomiar cukru", Toast.LENGTH_LONG);
+        toast.show();
     }
 }
