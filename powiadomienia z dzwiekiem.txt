@@ -1,0 +1,18 @@
+	try {
+						Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+						Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+						r.play();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					MojaKlasa.setByloOdtwarzanePowiadomienie(true);
+
+					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Channel")
+							.setSmallIcon(R.drawable.ic_blinky_feature)
+							.setContentTitle("UVI Meter")
+							.setContentText("Przekroczono dopuszczaln¹ dawkê UV.")
+							.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+					NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+					notificationManager.notify(1, mBuilder.build());
