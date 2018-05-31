@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.054" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/newMedName"
         android:layout_width="252dp"
         android:layout_height="49dp"
         android:layout_marginBottom="8dp"
@@ -47,7 +47,7 @@
         app:layout_constraintVertical_bias="0.19" />
 
     <EditText
-        android:id="@+id/editText6"
+        android:id="@+id/newDescName"
         android:layout_width="252dp"
         android:layout_height="49dp"
         android:layout_marginBottom="8dp"
@@ -68,7 +68,7 @@
         app:layout_constraintVertical_bias="0.331" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/saveNewMed"
         android:layout_width="154dp"
         android:layout_height="62dp"
         android:layout_marginBottom="8dp"
