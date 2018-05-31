@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="90dp">
+
+    <TextView
+        android:id="@+id/medicineListName"
+        android:layout_width="283dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="19dp"
+        android:text="Nazwa leku"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/dailyFrequencyListHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/medicineListName"
+        android:layout_below="@+id/medicineListName"
+        android:text="Częstotliwość:" />
+
+    <TextView
+        android:id="@+id/dailyFrequencyList"
+        android:layout_width="126dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/medicineListName"
+        android:layout_centerHorizontal="true"
+        android:text="ile razy dziennie" />
+
+    <TextView
+        android:id="@+id/portionListHeader"
+        android:layout_width="91dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/medicineListName"
+        android:layout_below="@+id/dailyFrequencyListHeader"
+        android:text="Dawka: " />
+
+    <TextView
+        android:id="@+id/portionList"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/dailyFrequencyList"
+        android:layout_alignTop="@+id/portionListHeader"
+        android:text="po ile" />
+
+    <TextView
+        android:id="@+id/unitList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/dailyFrequencyList"
+        android:layout_below="@+id/dailyFrequencyListHeader"
+        android:text="jednostka" />
+
+</RelativeLayout>

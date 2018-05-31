@@ -40,6 +40,8 @@
                 android:value=".MainActivity" />
             >
         </activity>
+        <activity android:name=".Medicine.NewMedicineActivity" />
+        <activity android:name=".Medicine.NewMedicineInDBActivity" />
     </application>
 
 </manifest>
