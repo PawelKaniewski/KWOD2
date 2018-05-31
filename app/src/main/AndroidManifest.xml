@@ -16,9 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MedicineActivity" />
+        <activity android:name=".Medicine.MedicineActivity" />
         <activity android:name=".MeasureActivity" />
-        <activity android:name=".AppointmentActivity"></activity>
+        <activity android:name=".AppointmentActivity" />
+        <activity android:name=".Medicine.NewMedicineActivity" />
+        <activity android:name=".Medicine.NewMedicineInDBActivity"></activity>
     </application>
 
 </manifest>
