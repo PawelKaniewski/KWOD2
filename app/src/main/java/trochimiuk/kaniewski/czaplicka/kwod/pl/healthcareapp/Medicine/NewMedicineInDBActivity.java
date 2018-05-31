@@ -30,11 +30,11 @@ public class NewMedicineInDBActivity extends AppCompatActivity {
         saveNewMed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(newMedName.length()!= 0 && newDescName.length()!= 0 ){
-                    AddData(new Medicine(newMedName.getText().toString(),newDescName.getText().toString()));
+                if (newMedName.length() != 0 && newDescName.length() != 0) {
+                    AddData(new Medicine(newMedName.getText().toString(), newDescName.getText().toString()));
                     newMedName.setText("");
                     newDescName.setText("");
-                }else{
+                } else {
                     Toast.makeText(NewMedicineInDBActivity.this, "Wprowadź wszystkie dane!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -43,11 +43,11 @@ public class NewMedicineInDBActivity extends AppCompatActivity {
 
     public void AddData(Medicine medicine) {
         boolean insertData = healthCareDb.addData(medicine);
-        if(insertData==true){
-            Intent medicineIntent = new Intent(getApplicationContext(),NewMedicineActivity.class);
+        if (insertData == true) {
+            Intent medicineIntent = new Intent(getApplicationContext(), NewMedicineActivity.class);
             medicineIntent.putExtra("dbSuccess", "Lek dodany do bazy danych!");
             startActivity(medicineIntent);
-        }else{
+        } else {
             Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
         }
     }
