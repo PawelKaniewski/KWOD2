@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment.AppointmentActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.MedicineActivity;
 
 public class MainActivity extends AppCompatActivity {
