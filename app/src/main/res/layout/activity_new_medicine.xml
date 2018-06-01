@@ -109,6 +109,7 @@
 
     <Button
         android:id="@+id/btn"
+        android:background="@drawable/add_btn"
         android:layout_width="147dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -118,6 +119,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Zapisz"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -127,6 +129,7 @@
 
     <Button
         android:id="@+id/addNewMedBtn"
+        android:background="@drawable/add_btn"
         android:layout_width="149dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -136,6 +139,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Dodaj nowy lek"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -29,7 +29,7 @@ public class AppointmentActivity extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String date = "Data: "+dayOfMonth+"/"+month+"/"+year;
+                String date = dayOfMonth+"/"+(month+1)+"/"+year;
                 myDate.setText(date);
             }
         });
