@@ -28,7 +28,7 @@
         app:layout_constraintVertical_bias="0.036" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/medicineSpinner"
         android:layout_width="307dp"
         android:layout_height="42dp"
         android:layout_marginBottom="336dp"
@@ -56,8 +56,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="Wprowadź częstotliwość "
         android:inputType="number"
-        android:text="Wprowadź częstotliwość "
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,8 +76,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="Wprowadź dawkę"
         android:inputType="number"
-        android:text="Wprowadź dawkę"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,8 +97,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="Wprowadź jednostkę"
         android:inputType="textPersonName"
-        android:text="Wprowadź jednostkę"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

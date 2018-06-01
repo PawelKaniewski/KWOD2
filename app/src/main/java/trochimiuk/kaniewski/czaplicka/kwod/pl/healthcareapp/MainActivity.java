@@ -11,8 +11,6 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.MedicineAct
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

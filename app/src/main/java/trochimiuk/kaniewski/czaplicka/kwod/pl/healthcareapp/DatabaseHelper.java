@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "healthCare.db";
@@ -32,11 +34,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addData(String name, String description) {
+    public boolean addData(Medicine medicine) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL2, name);
-        contentValues.put(COL3,description);
+        contentValues.put(COL2, medicine.getName());
+        contentValues.put(COL3, medicine.getDescription());
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
