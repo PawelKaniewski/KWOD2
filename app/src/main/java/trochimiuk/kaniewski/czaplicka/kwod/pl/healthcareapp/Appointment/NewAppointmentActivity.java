@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -46,12 +47,13 @@ public class NewAppointmentActivity extends AppCompatActivity{
     private String appointmentDay;
     private String appointmentTime;
     private String appointmentDescription;
-    private boolean validDay;
-    private boolean validTime;
+    private boolean validDate;
     private boolean validNotifyDate;
+    private boolean validDoctor;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
     private Intent intent;
+    private Date notifyDate;
     private String notifyMessage;
     private String validMessage;
 
@@ -75,13 +77,14 @@ public class NewAppointmentActivity extends AppCompatActivity{
         spinnerReminder.setEnabled(false);
         spinnerReminder.setSelection(5);
         initValid();
+        notifyDate = new Date();
 
         saveAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getData();
 
-                if (validDay && validTime && validNotifyDate) {
+                if (validDate && validNotifyDate && validDoctor) {
                     if (remind) turnOnNotify();
 
                     Intent resultIntent = new Intent();
@@ -96,6 +99,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
                 }
                 else {
                     Toast toast = Toast.makeText(getApplicationContext(), validMessage, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     initValid();
                 }
@@ -117,58 +121,103 @@ public class NewAppointmentActivity extends AppCompatActivity{
     void initValid()
     {
         validMessage = "";
-        validDay = true;
-        validTime = true;
+        validDate = true;
         validNotifyDate = true;
+        validDoctor = true;
     }
 
     void getData() {
         try {
             appointmentDay = dateInsert.getText().toString();
-            validDate();
             dateFormatDay.parse(appointmentDay);
+            validDate();
         } catch (ParseException e) {
             e.printStackTrace();
-            validDay = false;
             validMessage = validMessage+"Niepoprawna data wizyty. Wymagany format: dd.MM.yy.";
+            validDate = false;
         }
         try {
             appointmentTime = timeInsert.getText().toString();
             dateFormatTime.parse(appointmentTime);
+            validTime();
         } catch (ParseException e) {
             e.printStackTrace();
-            validTime = false;
-            if (!validDay) validMessage = validMessage+"\n";
+            if (!validDate) validMessage = validMessage+"\n";
             validMessage = validMessage+"Niepoprawna godzina wizyty. Wymagany format: HH:mm.";
+            validDate = false;
         }
-        if (validDay && validTime) {
+        if (validDate) {
             try {
                 appointmentDate = dateFormat.parse(appointmentDay + " " + appointmentTime);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Date date = appointmentDate;
-            date.setTime(date.getTime()-setTimeBeforeDate());
-            if (date.getTime() > new Date().getTime()) {
+            if (appointmentDate.getTime() > new Date().getTime()) {
+                if (doctorInsert.getText().toString().equals("")) {
+                    if (!validDate) validMessage = validMessage+"\n";
+                    validMessage = validMessage+"Pole \"Lekarz\" nie może być puste.";
+                    validDoctor = false;
+                }
                 appointmentDescription = "Lekarz: " + doctorInsert.getText() + "\nMiejsce: " + placeInsert.getText() + "\nOpis: " + infoInsert.getText();
-                notifyMessage = "Przypomnienie o wizycie dnia " + appointmentDay + " o godz. " + appointmentTime;
             }
             else {
-                if (!validDay || !validTime) validMessage = validMessage+"\n";
-                validMessage = validMessage+"Przypomnienie musi być ustawione na przyszłość.";
-                validNotifyDate = false;
+                validMessage = validMessage+"Wizyta musi zostać ustawiona na przyszłość.";
+                validDate = false;
             }
+            if (remind) {
+                notifyDate.setTime(appointmentDate.getTime()-setTimeBeforeDate());
+                if (notifyDate.getTime() > new Date().getTime())
+                    notifyMessage = "Przypomnienie o wizycie dnia " + appointmentDay + " o godz. " + appointmentTime;
+                else {
+                    if (!validDate) validMessage = validMessage+"\n";
+                    validMessage = validMessage+"Przypomnienie musi zostać ustawione na przyszłość.";
+                    validNotifyDate = false;
+                }
+            }
+
         }
     }
 
     void validDate() {
-        
+        if (appointmentDay.length()==8) {
+            int day = Integer.parseInt(appointmentDay.substring(0,2));
+            int month = Integer.parseInt(appointmentDay.substring(3,5));
+            System.out.println("data: "+appointmentDay.substring(0,2)+"."+appointmentDay.substring(3,5));
+            System.out.println("data: "+day+"."+month);
+            if (day<1 || day>31 || month<1 || month>12) {
+                validMessage = validMessage+"Niepoprawna data wizyty. Wymagany format: dd.MM.yy.";
+                validDate = false;
+            }
+        }
+        else {
+            validMessage = validMessage+"Niepoprawna data wizyty. Wymagany format: dd.MM.yy.";
+            validDate = false;
+        }
+    }
+
+    void validTime() {
+        if (appointmentTime.length()==5) {
+            int hour = Integer.parseInt(appointmentTime.substring(0,2));
+            int min = Integer.parseInt(appointmentTime.substring(3,5));
+            System.out.println("godzina: "+appointmentTime.substring(0,2)+":"+appointmentTime.substring(3,5));
+            System.out.println("godzina: "+hour+":"+min);
+            if (hour<0 || hour>23 || min<0 || min>59) {
+                if (!validDate) validMessage = validMessage+"\n";
+                validMessage = validMessage+"Niepoprawna godzina wizyty. Wymagany format: HH:mm.";
+                validDate = false;
+            }
+        }
+        else {
+            if (!validDate) validMessage = validMessage+"\n";
+            validMessage = validMessage+"Niepoprawna godzina wizyty. Wymagany format: HH:mm.";
+            validDate = false;
+        }
     }
 
 
     void turnOnNotify() {
         showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
-        scheduler(appointmentDate, setTimeBeforeDate());
+        scheduler(notifyDate);
     }
 
     long setTimeBeforeDate() {
@@ -226,15 +275,11 @@ public class NewAppointmentActivity extends AppCompatActivity{
         notificationManager.notify(1, mBuilder.build());
     }
 
-    void scheduler(Date date, long beforeDate)
+    void scheduler(Date date)
     {
         intent = new Intent(this, AppointmentNotify.class);
         intent.putExtra("message",notifyMessage);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        System.out.println(date);
-        date.setTime(date.getTime()-beforeDate);
-        System.out.println(date);
 
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
