@@ -23,18 +23,19 @@
 
     <TextView
         android:id="@+id/dailyFrequencyList"
-        android:layout_width="126dp"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/medicineListName"
-        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="89dp"
         android:text="ile razy dziennie" />
 
     <TextView
         android:id="@+id/portionListHeader"
         android:layout_width="91dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/medicineListName"
-        android:layout_below="@+id/dailyFrequencyListHeader"
         android:text="Dawka: " />
 
     <TextView
@@ -50,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/dailyFrequencyList"
-        android:layout_below="@+id/dailyFrequencyListHeader"
+        android:layout_alignParentBottom="true"
         android:text="jednostka" />
 
 </RelativeLayout>

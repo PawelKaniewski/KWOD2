@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.CustomizedMedicine;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
@@ -85,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getCustomMedicinesListContents(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + CUSTOM_MEDICINES_TABLE_NAME, null);
+        System.out.println("Nazwa kolumny: " + data.getColumnName(0)  );
         return data;
     }
 

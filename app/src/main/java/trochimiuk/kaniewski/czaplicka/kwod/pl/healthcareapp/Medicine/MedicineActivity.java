@@ -46,31 +46,13 @@ public class MedicineActivity extends AppCompatActivity {
             Toast.makeText(this, "Brak custom leków w bazie! Zdefiniuj lek!", Toast.LENGTH_LONG).show();
         } else {
             while (data.moveToNext()) {
-                Medicine medicine = new Medicine(data.getString(0), data.getString(1));
-               // CustomizedMedicine customizedMedicine = new CustomizedMedicine(medicine, Integer.parseInt(data.getString(2), Integer.parseInt(data.getString(3)))
-                CustomizedMedicine customizedMedicine = new CustomizedMedicine(medicine,1,2,"blabla");
-                //currentMedicinesList.add(new CustomizedMedicine(Integer.parseInt(data.getString(2)), Integer.parseInt(data.getString(3)), data.getString(4)));
+                Medicine medicine = new Medicine(data.getString(1), data.getString(2));
+                Toast.makeText(this, "NAZWA LEKU TO: " + medicine.getName(), Toast.LENGTH_LONG).show();
+                CustomizedMedicine customizedMedicine = new CustomizedMedicine(medicine, Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)),data.getString(5));
                 currentMedicinesList.add(customizedMedicine);
                 medicineAdapter.notifyDataSetChanged();
             }
         }
-
-        Medicine medicine1 = new Medicine("testLek1","");
-        Medicine medicine2 = new Medicine("testLek2","");
-        Medicine medicine3 = new Medicine("testLek3","");
-        CustomizedMedicine customizedMedicine1 = new CustomizedMedicine(medicine1,2,1,"tabletki");
-        CustomizedMedicine customizedMedicine2 = new CustomizedMedicine(medicine2,3,2,"tabletki");
-        CustomizedMedicine customizedMedicine3 = new CustomizedMedicine(medicine3,1,3,"tabletki");
-        CustomizedMedicine customizedMedicine4 = new CustomizedMedicine(medicine2,3,2,"tabletki");
-        CustomizedMedicine customizedMedicine5 = new CustomizedMedicine(medicine3,1,3,"tabletki");
-
-        currentMedicinesList.add(customizedMedicine1);
-        currentMedicinesList.add(customizedMedicine2);
-        currentMedicinesList.add(customizedMedicine3);
-        currentMedicinesList.add(customizedMedicine4);
-        currentMedicinesList.add(customizedMedicine5);
-
-        medicineAdapter.notifyDataSetChanged();
 
         Button addMedicineBtn = (Button) findViewById(R.id.addMedicineBtn);
         addMedicineBtn.setOnClickListener(new View.OnClickListener() {
