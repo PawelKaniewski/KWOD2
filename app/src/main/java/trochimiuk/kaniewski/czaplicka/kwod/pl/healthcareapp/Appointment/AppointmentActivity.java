@@ -31,7 +31,7 @@ public class AppointmentActivity extends AppCompatActivity {
     //private SimpleDateFormat dateFormatFull = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
     private SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
-    private static TextView clickedDate;
+    private TextView clickedDate;
     private Button addAppointmentBtn;
     private Button prevMonthBtn;
     private Button nextMonthBtn;
@@ -41,10 +41,6 @@ public class AppointmentActivity extends AppCompatActivity {
     private RecyclerView eventsRecycle;
     private AppointmentsList appointmentsAdapter;
     private int eventColor;
-
-    public static TextView getClickedDate() {
-        return clickedDate;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +101,7 @@ public class AppointmentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent appointmentIntent = new Intent(getApplicationContext(),NewAppointmentActivity.class);
+                appointmentIntent.putExtra("clickedDate",clickedDate.getText());
                 startActivityForResult(appointmentIntent, 1);
             }
 
@@ -155,5 +152,4 @@ public class AppointmentActivity extends AppCompatActivity {
         eventsRecycle.setAdapter(appointmentsAdapter);
     }
 
-        //public static CompactCalendarView getCalendarView() {return calendarView;}
 }
