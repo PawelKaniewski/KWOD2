@@ -248,7 +248,7 @@ private Switch przelacznikPrzypomnienia;
     {
         Calendar my_calendar = Calendar.getInstance();
         my_calendar.setTimeInMillis(System.currentTimeMillis());
-        my_calendar.set(Calendar.HOUR, hour);
+        my_calendar.set(Calendar.HOUR_OF_DAY, hour);
         my_calendar.set(Calendar.MINUTE, minute);
 //my_calendar.set
 
