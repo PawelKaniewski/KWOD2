@@ -1,5 +1,6 @@
 package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -8,27 +9,28 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment.AppointmentActivity;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.MeasureActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class MedicineNotifyActivity extends AppCompatActivity {
 
     private String notifyMessage;
+    private Intent intent;
+    private PendingIntent pendingIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        notifyMessage = intent.getStringExtra("message");
-        System.out.println("Odczytana: "+notifyMessage);
-
-        generateNotification();
-        Intent appointmentIntent = new Intent(getApplicationContext(),MedicineActivity.class);
-        startActivity(appointmentIntent);
+        displayNotification();
+        intent = new Intent(this, MedicineActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
     }
 
-    void generateNotification()
+    void displayNotification()
     {
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -41,11 +43,14 @@ public class MedicineNotifyActivity extends AppCompatActivity {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Channel")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("HealtCare")
-                .setContentText(notifyMessage)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentText("Pamiętaj o zażyciu leku!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, mBuilder.build());
-
+        Toast toast = Toast.makeText(getApplicationContext(), "Pamiętaj o zażyciu leku!", Toast.LENGTH_LONG);
+        toast.show();
     }
 }

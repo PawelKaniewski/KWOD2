@@ -1,24 +1,36 @@
 package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class NewMedicineActivity extends AppCompatActivity {
@@ -31,12 +43,32 @@ public class NewMedicineActivity extends AppCompatActivity {
     private EditText frequency, portion, unit;
     private int selectedMed;
 
+    private EditText medNotHours;
+    private EditText medNotMin;
+    private int hours;
+    private int min;
+    private Switch medNotSwitch;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    private Intent intent;
+    private boolean wasNotOn = false;
+    private boolean remind = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_medicine);
 
         this.initAllFields();
+
+        medNotSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remind =!remind;
+                System.out.println(remind);
+                medNotSwitch.setEnabled(remind);
+            }
+        });
 
         addMedicineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +81,7 @@ public class NewMedicineActivity extends AppCompatActivity {
         saveMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                if (remind) turnOnNotifications(true);
                 CustomizedMedicine customizedMedicine = new CustomizedMedicine(-1,medicinesList.get(selectedMed),Integer.parseInt(frequency.getText().toString()),Integer.parseInt(portion.getText().toString()),unit.getText().toString());
                 saveNewCustomMedicineToDB(customizedMedicine);
             }
@@ -85,6 +118,93 @@ public class NewMedicineActivity extends AppCompatActivity {
 
     }
 
+    void turnOnNotifications(boolean ifOn) {
+        if (ifOn)
+        {
+            if(Integer.parseInt(medNotHours.getText().toString())>23 || Integer.parseInt(medNotHours.getText().toString()) <0 || medNotHours.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "Niepoprawnie wpisana godzina", Toast.LENGTH_SHORT).show();
+                medNotHours.setText("");
+                medNotSwitch.setChecked(false);
+
+            }
+            else if( Integer.parseInt(medNotMin.getText().toString())> 59 ||  Integer.parseInt(medNotMin.getText().toString()) <0 || medNotMin.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "Niepoprawnie wpisana minuta", Toast.LENGTH_SHORT).show();
+                medNotMin.setText("");
+                medNotSwitch.setChecked(false);
+            }
+            else {
+                hours = Integer.parseInt(medNotHours.getText().toString());
+                min = Integer.parseInt(medNotMin.getText().toString());
+                displayNotification("Uruchomiono przypominajke");
+                scheduler(hours, min);
+            }
+        }
+        else {
+            schedulerStop();
+        }
+    }
+    void displayNotification(String message)
+    {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Channel")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("HealtCare")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(1, mBuilder.build());
+    }
+
+    void scheduler(int hour, int minute)
+    {
+        Calendar my_calendar = Calendar.getInstance();
+        my_calendar.setTimeInMillis(System.currentTimeMillis());
+        my_calendar.set(Calendar.HOUR_OF_DAY, hour);
+        my_calendar.set(Calendar.MINUTE, minute);
+
+        long currentTime = System.currentTimeMillis();
+        long oneMinute = 5 * 1000;
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                my_calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent);
+        wasNotOn = true;
+        //wykonajZrzutPamieci();
+
+    }
+
+    void schedulerStop()
+    {
+        alarmManager.cancel(pendingIntent);
+    }
+    void switchAndSchedulerConfig() {
+        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        intent = new Intent(this, MedicineNotifyActivity.class);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        if(wasNotOn) {
+            //scheduler wciąż jest wlaczony zgodnie z poprzednimi ustawieniami
+            medNotSwitch.setChecked(true);
+            medNotHours.setText(hours);
+            medNotMin.setText(min);
+        }
+        else {
+            schedulerStop();
+            medNotSwitch.setChecked(false);
+        }
+    }
+
+
+
     private void saveNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
         boolean insertData = healthCareDb.addNewCustomMedicineToDB(customizedMedicine);
         if (insertData == true) {
@@ -108,6 +228,11 @@ public class NewMedicineActivity extends AppCompatActivity {
         frequency.setEnabled(false);
         portion.setEnabled(false);
         unit.setEnabled(false);
+        medNotHours = (EditText) findViewById(R.id.medNotHours);
+        medNotMin = (EditText) findViewById(R.id.medNotMin);
+        medNotSwitch = (Switch) findViewById(R.id.medNotSwitch);
+        switchAndSchedulerConfig();
+
     }
 
     private void createMedicineDropDownList() {
