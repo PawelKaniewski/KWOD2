@@ -50,7 +50,7 @@
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />
         <activity android:name=".DoMeasureActivity"></activity>
-        <receiver android:name=".Appointment.AppointmentNotify"/>
+        <activity android:name=".Appointment.AppointmentNotify"/>
     </application>
 
 </manifest>

@@ -35,6 +35,8 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 public class NewAppointmentActivity extends AppCompatActivity{
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
+    //private SimpleDateFormat dateFormatTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    //private SimpleDateFormat dateFormatDay = new SimpleDateFormat("dd.MM", Locale.getDefault());
     private Button saveAppointmentBtn;
     private EditText dateInsert;
     private EditText timeInsert;
@@ -45,6 +47,8 @@ public class NewAppointmentActivity extends AppCompatActivity{
     private Spinner spinnerRemeinder;
     private boolean remeind = false;
     private Date appointmentDate;
+    private String appointmentDay;
+    private String appointmentTime;
     private String appointmentDescription;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
@@ -73,12 +77,15 @@ public class NewAppointmentActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 try {
+                    appointmentDay = dateInsert.getText().toString();
+                    appointmentTime = timeInsert.getText().toString();
                     appointmentDate = dateFormat.parse(dateInsert.getText().toString()+" "+timeInsert.getText().toString());
                     System.out.println(appointmentDate.getTime());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 appointmentDescription = "Lekarz: "+doctorInsert.getText()+"\nMiejsce: "+placeInsert.getText()+"\nOpis: "+infoInsert.getText();
+                notifyMessage = "Przypomnienie o wizycie dnia "+appointmentDay+" o godz. "+appointmentTime;
                 turnOnNotify(remeind);
 
                 Intent resultIntent = new Intent();
@@ -142,7 +149,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
     void scheduler(Date date)
     {
         intent = new Intent(this, AppointmentNotify.class);
-        //intent.putExtra("message",notifyMessage);
+        intent.putExtra("message",notifyMessage);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         System.out.println(date.getTime());
