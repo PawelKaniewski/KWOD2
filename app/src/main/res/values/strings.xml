@@ -4,4 +4,6 @@
     <string name="medicineBtn">Leki</string>
     <string name="measureBtn">Pomiary</string>
     <string name="addAppBtn">Dodaj wizytę</string>
+    <string name="nextMonthBtn">→</string>
+    <string name="prevMonthBtn">←</string>
 </resources>

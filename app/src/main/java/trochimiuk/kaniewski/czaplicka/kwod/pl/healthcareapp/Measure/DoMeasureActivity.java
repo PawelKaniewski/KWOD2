@@ -1,4 +1,4 @@
-package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp;
+package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure;
 
 import android.content.Intent;
 import android.media.Ringtone;
@@ -9,6 +9,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class DoMeasureActivity extends AppCompatActivity {
 

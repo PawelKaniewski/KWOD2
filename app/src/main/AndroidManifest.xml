@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp">
 
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,12 +33,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".AppointmentActivity"
+        <activity android:name=".Appointment.AppointmentActivity"
             android:parentActivityName=".MainActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity android:name=".Appointment.NewAppointmentActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".Appointment.AppointmentActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Appointment.AppointmentActivity" />
         </activity>
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />

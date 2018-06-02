@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment.AppointmentActivity;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.MeasureActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.MedicineActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Button medicineBtn = (Button) findViewById(R.id.medicineBtn);
         Button measureBtn = (Button) findViewById(R.id.measureBtn);
         Button appointmentBtn = (Button) findViewById(R.id.appointmentBtn);
+        //MainActivity.this.deleteDatabase("healthCare.db");
 
         medicineBtn.setOnClickListener(new View.OnClickListener() {
             @Override

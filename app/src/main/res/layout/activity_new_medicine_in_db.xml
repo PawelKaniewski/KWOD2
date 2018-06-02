@@ -19,6 +19,7 @@
         android:text="Zdefiniuj nowy lek"
         android:textColor="@android:color/black"
         android:textSize="18sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +49,7 @@
 
     <Button
         android:id="@+id/saveNewMed"
+        android:background="@drawable/add_btn"
         android:layout_width="154dp"
         android:layout_height="62dp"
         android:layout_marginBottom="8dp"
@@ -57,6 +59,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Zapisz"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
