@@ -1,4 +1,4 @@
-package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp;
+package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -27,6 +27,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 /**
  * By skończyć działanie tej klasy potrzebne jest przechowywanie gdzieś w pliku kilku wartości

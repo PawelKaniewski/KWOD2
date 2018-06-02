@@ -1,6 +1,7 @@
 package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,24 +10,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.CustomizedMedicine;
-import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
-public class MedicineActivity extends AppCompatActivity {
+public class MedicineActivity extends AppCompatActivity implements MedicineAdapter.SingleClickListener {
 
     private RecyclerView recyclerView;
     private List<CustomizedMedicine> currentMedicinesList = new ArrayList<>();
     private MedicineAdapter medicineAdapter;
+    private DatabaseHelper healthCareDb;
+    private Button editBtn, delBtn, detailsBtn;
+    private int selectedPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_medicine);
         recyclerView = (RecyclerView) findViewById(R.id.currentMedicinesList);
 
@@ -36,33 +39,58 @@ public class MedicineActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(medicineAdapter);
+        medicineAdapter.setOnItemClickListener(this);
+        healthCareDb = new DatabaseHelper(this);
+        Cursor data = healthCareDb.getCustomMedicinesListContents();
+        if (data.getCount() == 0) {
+            Toast.makeText(this, "Brak custom leków w bazie! Zdefiniuj lek!", Toast.LENGTH_LONG).show();
+        } else {
+            while (data.moveToNext()) {
+                Medicine medicine = new Medicine(data.getString(1), data.getString(2));
+                CustomizedMedicine customizedMedicine = new CustomizedMedicine(Integer.parseInt(data.getString(0)), medicine, Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)), data.getString(5));
+                currentMedicinesList.add(customizedMedicine);
+                medicineAdapter.notifyDataSetChanged();
+            }
+        }
 
-        Medicine medicine1 = new Medicine("testLek1","");
-        Medicine medicine2 = new Medicine("testLek2","");
-        Medicine medicine3 = new Medicine("testLek3","");
-        CustomizedMedicine customizedMedicine1 = new CustomizedMedicine(medicine1,2,1,"tabletki");
-        CustomizedMedicine customizedMedicine2 = new CustomizedMedicine(medicine2,3,2,"tabletki");
-        CustomizedMedicine customizedMedicine3 = new CustomizedMedicine(medicine3,1,3,"tabletki");
-        CustomizedMedicine customizedMedicine4 = new CustomizedMedicine(medicine2,3,2,"tabletki");
-        CustomizedMedicine customizedMedicine5 = new CustomizedMedicine(medicine3,1,3,"tabletki");
+        editBtn = (Button) findViewById(R.id.editBtn);
+        detailsBtn = (Button) findViewById(R.id.detailsBtn);
+        delBtn = (Button) findViewById(R.id.delBtn);
 
-        currentMedicinesList.add(customizedMedicine1);
-        currentMedicinesList.add(customizedMedicine2);
-        currentMedicinesList.add(customizedMedicine3);
-        currentMedicinesList.add(customizedMedicine4);
-        currentMedicinesList.add(customizedMedicine5);
+        delBtn.setOnClickListener(new View.OnClickListener() {
 
-        medicineAdapter.notifyDataSetChanged();
+            @Override
+            public void onClick(View v) {
+
+                if (healthCareDb.deleteCustomMedicine(currentMedicinesList.get(selectedPosition).getId())) {
+                    Toast.makeText(MedicineActivity.this, "Usunięto lek o nazwie: " + currentMedicinesList.get(selectedPosition).getMedicine().getName(), Toast.LENGTH_LONG).show();
+                    currentMedicinesList.remove(selectedPosition);
+                    medicineAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MedicineActivity.this, "Blad usunięcia!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+        });
+
 
         Button addMedicineBtn = (Button) findViewById(R.id.addMedicineBtn);
         addMedicineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent medicineIntent = new Intent(getApplicationContext(),NewMedicineActivity.class);
+                Intent medicineIntent = new Intent(getApplicationContext(), NewMedicineActivity.class);
                 startActivity(medicineIntent);
             }
         });
+    }
 
-
+        @Override
+        public void onItemClickListener(int position, View view) {
+            medicineAdapter.selectedItem();
+            this.selectedPosition = position;
+            editBtn.setEnabled(true);
+            detailsBtn.setEnabled(true);
+            delBtn.setEnabled(true);
     }
 }

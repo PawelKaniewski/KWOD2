@@ -3,17 +3,18 @@ package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
 
 public class CustomizedMedicine {
-
+    private int id;
     private Medicine medicine;
     private int frequency;
     private int portion;
     private String unit;
 
-    public CustomizedMedicine(Medicine medicine, int frequency, int portion, String unit){
+    public CustomizedMedicine(int id, Medicine medicine, int frequency, int portion, String unit) {
         this.frequency = frequency;
         this.medicine = medicine;
         this.portion = portion;
         this.unit = unit;
+        this.id = id;
     }
 
 
@@ -49,6 +50,9 @@ public class CustomizedMedicine {
         this.unit = unit;
     }
 
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
 
 }
