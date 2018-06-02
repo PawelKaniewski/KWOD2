@@ -20,7 +20,7 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.CustomizedM
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
-public class MedicineActivity extends AppCompatActivity {
+public class MedicineActivity extends AppCompatActivity  {
 
     private RecyclerView recyclerView;
     private List<CustomizedMedicine> currentMedicinesList = new ArrayList<>();

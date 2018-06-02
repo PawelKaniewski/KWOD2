@@ -11,6 +11,7 @@
         android:layout_marginStart="23dp"
         android:layout_marginTop="19dp"
         android:text="Nazwa leku"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
 
     <TextView
@@ -19,39 +20,48 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/medicineListName"
         android:layout_below="@+id/medicineListName"
-        android:text="Częstotliwość:" />
+        android:text="Częstotliwość:"
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/dailyFrequencyList"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@+id/medicineListName"
         android:layout_below="@+id/medicineListName"
-        android:layout_marginEnd="89dp"
         android:text="ile razy dziennie" />
 
     <TextView
         android:id="@+id/portionListHeader"
         android:layout_width="91dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/medicineListName"
-        android:text="Dawka: " />
+        android:layout_below="@+id/dailyFrequencyListHeader"
+        android:text="Dawka: "
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/portionList"
-        android:layout_width="46dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/dailyFrequencyList"
-        android:layout_alignTop="@+id/portionListHeader"
+        android:layout_below="@+id/dailyFrequencyListHeader"
         android:text="po ile" />
 
     <TextView
         android:id="@+id/unitList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/dailyFrequencyList"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/dailyFrequencyListHeader"
+        android:layout_marginEnd="94dp"
         android:text="jednostka" />
+
+    <RadioButton
+        android:id="@+id/medicineRbtn"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>
