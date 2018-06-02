@@ -49,7 +49,7 @@ public class NewMedicineActivity extends AppCompatActivity {
         saveMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                CustomizedMedicine customizedMedicine = new CustomizedMedicine(medicinesList.get(selectedMed),Integer.parseInt(frequency.getText().toString()),Integer.parseInt(portion.getText().toString()),unit.getText().toString());
+                CustomizedMedicine customizedMedicine = new CustomizedMedicine(-1,medicinesList.get(selectedMed),Integer.parseInt(frequency.getText().toString()),Integer.parseInt(portion.getText().toString()),unit.getText().toString());
                 saveNewCustomMedicineToDB(customizedMedicine);
             }
 

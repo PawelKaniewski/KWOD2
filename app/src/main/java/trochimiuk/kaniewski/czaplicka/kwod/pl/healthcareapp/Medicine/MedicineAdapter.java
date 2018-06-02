@@ -15,6 +15,7 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHolder> {
 
     private List<CustomizedMedicine> customizedMedicines;
+    private static SingleClickListener sClickListener;
 
     private int lastSelectedPosition = -1;
 
@@ -36,12 +37,15 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     lastSelectedPosition = getAdapterPosition();
-                    notifyDataSetChanged();
-
+                    sClickListener.onItemClickListener(getAdapterPosition(), v);
                 }
             });
 
         }
+    }
+
+    void setOnItemClickListener(SingleClickListener clickListener) {
+        sClickListener = clickListener;
     }
 
     public MedicineAdapter(List<CustomizedMedicine> customizedMedicines) {
@@ -54,6 +58,10 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
                 .inflate(R.layout.current_medicines_list_detail, parent, false);
 
         return new ViewHolder(itemView);
+    }
+
+    public void selectedItem() {
+        notifyDataSetChanged();
     }
 
     @Override
@@ -71,8 +79,13 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         return customizedMedicines.size();
     }
 
+    public int getLastSelectedPosition(){
+        return lastSelectedPosition;
+    }
 
-
+    interface SingleClickListener {
+        void onItemClickListener(int position, View view);
+    }
 
 
 }

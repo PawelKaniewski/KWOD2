@@ -13,6 +13,7 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Medicine.Medicine;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "healthCare.db";
+    private static final String KEY_ROWID = "_ROWID_";
     private static final String MEDICINES_TABLE_NAME = "MEDICINES";
     private static final String CUSTOM_MEDICINES_TABLE_NAME = "CUSTOM_MEDICINES";
     private static final String[] CUSTOM_MEDICINES_COLUMNS = {"MEDICINE_NAME","MEDICINE_DESCRIPTION","FREQUENCY","PORTION","UNIT"};
@@ -90,5 +91,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public boolean deleteCustomMedicine(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(CUSTOM_MEDICINES_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
+    }
 
 }
