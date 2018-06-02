@@ -167,7 +167,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchRemeinder" />
+        app:layout_constraintTop_toBottomOf="@+id/switchReminder" />
 
     <EditText
         android:id="@+id/insertDate"
@@ -200,7 +200,7 @@
         app:layout_constraintTop_toBottomOf="@+id/insertDate" />
 
     <Switch
-        android:id="@+id/switchRemeinder"
+        android:id="@+id/switchReminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
@@ -212,7 +212,7 @@
         app:layout_constraintTop_toBottomOf="@+id/insertInfo" />
 
     <Spinner
-        android:id="@+id/spinnerRemeinder"
+        android:id="@+id/spinnerReminder"
         android:layout_width="0dp"
         android:layout_height="42dp"
         android:layout_marginEnd="24dp"
@@ -223,8 +223,9 @@
         android:background="#cecece"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/switchRemeinder"
-        app:layout_constraintTop_toBottomOf="@+id/insertInfo" />
+        app:layout_constraintStart_toEndOf="@+id/switchReminder"
+        app:layout_constraintTop_toBottomOf="@+id/insertInfo"
+        android:entries="@array/remindTime" />
 
 
 </android.support.constraint.ConstraintLayout>

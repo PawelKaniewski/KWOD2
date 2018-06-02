@@ -6,4 +6,17 @@
     <string name="addAppBtn">Dodaj wizytę</string>
     <string name="nextMonthBtn">→</string>
     <string name="prevMonthBtn">←</string>
+
+    <string name="remindPrompt">Wybierz kiedy</string>
+    <string-array name="remindTime">
+        <item>2 tygodnie przed</item>
+        <item>tydzień przed</item>
+        <item>5 dni przed</item>
+        <item>3 dni przed</item>
+        <item>2 dni przed</item>
+        <item>dzień przed</item>
+        <item>5 godzin przed</item>
+        <item>2 godziny przed</item>
+        <item>godzinę przed</item>
+    </string-array>
 </resources>
