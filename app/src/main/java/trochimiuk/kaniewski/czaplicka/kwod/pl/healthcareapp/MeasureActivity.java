@@ -58,7 +58,7 @@ public class MeasureActivity extends AppCompatActivity {
     private Calendar cal;
     private int godzina;
     private int minuta ;
-private Switch przelacznikPrzypomnienia;
+    private Switch przelacznikPrzypomnienia;
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
     Intent intent;

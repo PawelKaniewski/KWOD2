@@ -41,7 +41,6 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".Appointment.NewAppointmentActivity"
-            android:launchMode="singleTask"
             android:parentActivityName=".Appointment.AppointmentActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -51,6 +50,7 @@
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />
         <activity android:name=".DoMeasureActivity"></activity>
+        <receiver android:name=".Appointment.AppointmentNotify"/>
     </application>
 
 </manifest>
