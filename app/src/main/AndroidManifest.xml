@@ -26,7 +26,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".MeasureActivity"
+        <activity android:name=".Measure.MeasureActivity"
             android:parentActivityName=".MainActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -50,7 +50,7 @@
         </activity>
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />
-        <activity android:name=".DoMeasureActivity"></activity>
+        <activity android:name=".Measure.DoMeasureActivity"></activity>
     </application>
 
 </manifest>
