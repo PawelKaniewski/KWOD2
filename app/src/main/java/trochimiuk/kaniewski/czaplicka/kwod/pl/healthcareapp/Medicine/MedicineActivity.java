@@ -47,14 +47,50 @@ public class MedicineActivity extends AppCompatActivity implements MedicineAdapt
         } else {
             while (data.moveToNext()) {
                 Medicine medicine = new Medicine(data.getString(1), data.getString(2));
-                CustomizedMedicine customizedMedicine = new CustomizedMedicine(Integer.parseInt(data.getString(0)), medicine, Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)), data.getString(5));
+                CustomizedMedicine customizedMedicine = new CustomizedMedicine(Integer.parseInt(data.getString(0)), medicine,
+                        Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)), data.getString(5),true,8,10);
+                        //data.getString(6),Integer.parseInt(data.getString(7)),Integer.parseInt(data.get));
                 currentMedicinesList.add(customizedMedicine);
                 medicineAdapter.notifyDataSetChanged();
             }
         }
 
         editBtn = (Button) findViewById(R.id.editBtn);
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent medicineIntent = new Intent(getApplicationContext(), EditCustomMedicineActivity.class);
+                CustomizedMedicine customMedicine = currentMedicinesList.get(selectedPosition);
+                medicineIntent.putExtra("medicineEditId",Integer.toString(customMedicine.getId()));
+                medicineIntent.putExtra("medicineNameEdit",customMedicine.getMedicine().getName());
+                medicineIntent.putExtra("medicineDescriptionEdit",customMedicine.getMedicine().getDescription());
+                medicineIntent.putExtra("medicineFrequencyEdit",Integer.toString(customMedicine.getFrequency()));
+                medicineIntent.putExtra("medicinePortionEdit",Integer.toString(customMedicine.getPortion()));
+                medicineIntent.putExtra("medicineUnitEdit",customMedicine.getUnit());
+                startActivity(medicineIntent);
+            }
+        });
+
+
         detailsBtn = (Button) findViewById(R.id.detailsBtn);
+        detailsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent medicineIntent = new Intent(getApplicationContext(), CustomMedicineDetailsActivity.class);
+                CustomizedMedicine customMedicine = currentMedicinesList.get(selectedPosition);
+                medicineIntent.putExtra("medicineName",customMedicine.getMedicine().getName());
+                medicineIntent.putExtra("medicineDescription",customMedicine.getMedicine().getDescription());
+                medicineIntent.putExtra("medicineFrequency", customMedicine.getFrequency());
+                medicineIntent.putExtra("medicinePortion",customMedicine.getPortion());
+                medicineIntent.putExtra("medicineUnit",customMedicine.getUnit());
+                //medicineIntent.putExtra("medicineName",customMedicine.getMedicine().getName());
+
+                startActivity(medicineIntent);
+            }
+        });
+
+
+
         delBtn = (Button) findViewById(R.id.delBtn);
 
         delBtn.setOnClickListener(new View.OnClickListener() {

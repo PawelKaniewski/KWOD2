@@ -66,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean addNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
+    public long addNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[0], customizedMedicine.getMedicine().getName());
@@ -76,11 +76,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[4], customizedMedicine.getUnit());
         long result = db.insert(CUSTOM_MEDICINES_TABLE_NAME, null, contentValues);
 
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result;
+
     }
 
     public boolean addAppointmentToDB(String date, String time, String doctor, String place,
@@ -129,6 +126,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean deleteCustomMedicine(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(CUSTOM_MEDICINES_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
+    }
+
+    public boolean updateCustomMedicine(CustomizedMedicine customizedMedicine) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[0], customizedMedicine.getMedicine().getName());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[1], customizedMedicine.getMedicine().getDescription());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[2], customizedMedicine.getFrequency());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[3], customizedMedicine.getPortion());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[4], customizedMedicine.getUnit());
+        return db.update(CUSTOM_MEDICINES_TABLE_NAME, contentValues, KEY_ROWID + "=" + customizedMedicine.getId(), null) > 0;
     }
 
     public boolean deleteAppointmentByID(int id){
