@@ -1,9 +1,11 @@
 package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,11 +34,12 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 public class AppointmentActivity extends AppCompatActivity {
 
     private DatabaseHelper healthCareDb;
-    private CompactCalendarView calendarView;
+    private static CompactCalendarView calendarView;
     private SimpleDateFormat dateFormatFull = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
     private SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
     private TextView clickedDate;
+    private Date prevDateClicked;
     private Button addAppointmentBtn;
     private Button prevMonthBtn;
     private Button nextMonthBtn;
@@ -46,6 +49,11 @@ public class AppointmentActivity extends AppCompatActivity {
     private RecyclerView eventsRecycle;
     private AppointmentsList appointmentsAdapter;
     private int eventColor;
+
+
+    public static CompactCalendarView getCalendarView() {
+        return calendarView;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +97,20 @@ public class AppointmentActivity extends AppCompatActivity {
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                clickedDate.setText(dateFormat.format(dateClicked));
-                showListOfEvents(dateClicked);
+                System.out.println("dateClicked:"+dateClicked);
+                System.out.println("prevDateClicked:"+prevDateClicked);
+                if (!dateClicked.equals(prevDateClicked)) {
+                    System.out.println("kliknięcie daty 1. raz");
+                    clickedDate.setText(dateFormat.format(dateClicked));
+                    showListOfEvents(dateClicked);
+                    prevDateClicked = dateClicked;
+                }
+                else {
+                    System.out.println("kliknięcie daty 2. raz !!!");
+                    Intent appointmentListIntent = new Intent(getApplicationContext(),AppointmentListActivity.class);
+                    appointmentListIntent.putExtra("clickedDate",clickedDate.getText().toString());
+                    startActivity(appointmentListIntent);
+                }
 
             }
 
