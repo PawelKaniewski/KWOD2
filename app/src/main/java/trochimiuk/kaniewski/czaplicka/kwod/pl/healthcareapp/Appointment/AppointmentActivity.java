@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -139,7 +140,11 @@ public class AppointmentActivity extends AppCompatActivity {
                     long dateL = data.getLongExtra("dateLong",-1);
                     Event event = new Event(eventColor, dateL, data.getStringExtra("description"));
                     calendarView.addEvent(event);
-                    showListOfEvents(new Date(dateL));
+                    try {
+                        showListOfEvents(dateFormat.parse(clickedDate.getText().toString()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             }
