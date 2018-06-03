@@ -75,7 +75,9 @@
         <activity android:name=".Appointment.AppointmentNotify" />
         <activity android:name=".Medicine.CustomMedicineDetailsActivity" />
         <activity android:name=".Medicine.MedicineNotifyActivity" />
+		<activity android:name=".MeasuresListActivity"/>
         <activity android:name=".Medicine.EditCustomMedicineActivity"></activity>
+		
     </application>
 
 </manifest>

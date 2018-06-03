@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.MeasuresListActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 /**
@@ -46,20 +47,21 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
  */
 
 public class MeasureActivity extends AppCompatActivity {
-    private final int  ILOSC_POMIAROW = 30;
+    private static final int  ILOSC_POMIAROW = 30;
 
     private final int NORMA_MAX = 150;
     private final int NORMA_MIN = 75;
 
     private int dzienOstatniegoPomiaru;
 
-    private int[] pomiary = new int[ILOSC_POMIAROW];
+    private static int[] pomiary = new int[ILOSC_POMIAROW];
     private boolean przypominajkaBylaWlaczona = false;
     private GraphView graph;
     private EditText wynik;
     private EditText godziny;
     private EditText minuty;
     private Button dodajPomiar;
+    private Button listaPomiarow;
     private Date d1;
     private Date d2;
     private Date d3;
@@ -80,6 +82,7 @@ public class MeasureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_measure);
 
         dodajPomiar = (Button) findViewById(R.id.dodajPomiar);
+        listaPomiarow = (Button) findViewById(R.id.przyciskListaPomiarow);
         wynik = (EditText) findViewById(R.id.wartoscPomiaru);
         graph = (GraphView) findViewById(R.id.graph);
         cal = Calendar.getInstance();
@@ -104,8 +107,13 @@ public class MeasureActivity extends AppCompatActivity {
                 }
             }
         });
-
-
+        listaPomiarow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent measureListIntent = new Intent(getApplicationContext(),MeasuresListActivity.class);
+                startActivity(measureListIntent);
+            }
+        });
 
 
 
@@ -332,6 +340,10 @@ void switchAndSchedulerConfig()
        schedulerStop();
        przelacznikPrzypomnienia.setChecked(false);
    }
+}
+public static int[] getPomiary()
+{
+    return pomiary;
 }
 void init()
 {
