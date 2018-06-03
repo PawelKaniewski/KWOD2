@@ -12,13 +12,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -30,7 +28,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
-import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class NewMedicineActivity extends AppCompatActivity {
@@ -81,13 +78,17 @@ public class NewMedicineActivity extends AppCompatActivity {
         saveMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (remind) turnOnNotifications(true);
-                CustomizedMedicine customizedMedicine = new CustomizedMedicine(-1,medicinesList.get(selectedMed),Integer.parseInt(frequency.getText().toString()),Integer.parseInt(portion.getText().toString()),unit.getText().toString());
-                saveNewCustomMedicineToDB(customizedMedicine);
+                CustomizedMedicine customizedMedicine = new CustomizedMedicine(-1,medicinesList.get(selectedMed),Integer.parseInt(frequency.getText().toString()),
+                        Integer.parseInt(portion.getText().toString()),unit.getText().toString(),medNotSwitch.isChecked(),Integer.parseInt(medNotHours.getText().toString()),
+                        Integer.parseInt(medNotMin.getText().toString()));
+                long rowId = saveNewCustomMedicineToDB(customizedMedicine);
+                if(rowId>0) {
+                    if (remind) turnOnNotifications(true);
+                    Toast.makeText(NewMedicineActivity.this, "Czy switch był włączony: " + medNotSwitch.isChecked(), Toast.LENGTH_LONG).show();
+                }
             }
 
         });
-
 
         healthCareDb = new DatabaseHelper(this);
         medicinesList = new ArrayList<>();
@@ -205,15 +206,17 @@ public class NewMedicineActivity extends AppCompatActivity {
 
 
 
-    private void saveNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
-        boolean insertData = healthCareDb.addNewCustomMedicineToDB(customizedMedicine);
-        if (insertData == true) {
+    private long saveNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
+        long insertData = healthCareDb.addNewCustomMedicineToDB(customizedMedicine);
+        if (insertData > 0) {
             //Intent medicineIntent = new Intent(getApplicationContext(), NewMedicineActivity.class);
             //medicineIntent.putExtra("dbSuccess", "Lek dodany do bazy danych!");
            // startActivity(medicineIntent);
             Toast.makeText(this, "NOWY LEK Z DANYMI O DAWKOWANIU DODANY DO BAZY!", Toast.LENGTH_LONG).show();
+            return insertData;
         } else {
             Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
+            return insertData;
         }
     }
 
