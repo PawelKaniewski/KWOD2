@@ -2,6 +2,7 @@ package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -24,12 +26,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class AppointmentActivity extends AppCompatActivity {
 
+    private DatabaseHelper healthCareDb;
     private CompactCalendarView calendarView;
-    //private SimpleDateFormat dateFormatFull = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
+    private SimpleDateFormat dateFormatFull = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
     private SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
     private TextView clickedDate;
@@ -49,6 +53,7 @@ public class AppointmentActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
+        healthCareDb = new DatabaseHelper(this);
 
         calendarView = (CompactCalendarView) findViewById(R.id.calendarView);
         clickedDate = (TextView) findViewById(R.id.myDate);
@@ -79,7 +84,7 @@ public class AppointmentActivity extends AppCompatActivity {
         //appointmentsAdapter.notifyDataSetChanged();
 
         calendarView.setUseThreeLetterAbbreviation(false);
-        //loadEvents();
+        loadEvents();
 
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -155,6 +160,27 @@ public class AppointmentActivity extends AppCompatActivity {
         events = calendarView.getEvents(date);
         appointmentsAdapter = new AppointmentsList(events);
         eventsRecycle.setAdapter(appointmentsAdapter);
+    }
+
+    public void loadEvents() {
+        Cursor data = healthCareDb.getAppointmentsListContents();
+        if (data.getCount() == 0) {
+            Toast.makeText(this, "Brak wizyt w bazie! Dodaj wizytę!", Toast.LENGTH_LONG).show();
+        } else {
+            while (data.moveToNext()) {
+                String appointmentDay = data.getString(1);
+                String appointmentTime = data.getString(2);
+                Date appointmentDate = new Date();
+                try {
+                    appointmentDate = dateFormatFull.parse(appointmentDay + " " + appointmentTime);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String appointmentDescription = "Lekarz: "+data.getString(3)+ "\nMiejsce: " +data.getString(4)+"\nOpis: "+data.getString(5);
+                Event event = new Event(eventColor,appointmentDate.getTime(),appointmentDescription);
+                calendarView.addEvent(event);
+            }
+        }
     }
 
 }

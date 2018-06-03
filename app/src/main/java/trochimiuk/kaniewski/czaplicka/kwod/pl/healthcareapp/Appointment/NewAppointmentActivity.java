@@ -27,10 +27,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class NewAppointmentActivity extends AppCompatActivity{
 
+    private DatabaseHelper healthCareDb;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormatTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormatDay = new SimpleDateFormat("dd.MM", Locale.getDefault());
@@ -62,6 +64,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_appointment);
         Intent intent = getIntent();
+        healthCareDb = new DatabaseHelper(this);
 
         dateInsert = (EditText) findViewById(R.id.insertDate);
         dateInsert.setText(intent.getStringExtra("clickedDate"));
@@ -87,15 +90,17 @@ public class NewAppointmentActivity extends AppCompatActivity{
                 if (validDate && validNotifyDate && validDoctor) {
                     if (remind) turnOnNotify();
 
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("dateLong", appointmentDate.getTime());
-                    resultIntent.putExtra("description", appointmentDescription);
+                    if(addAppointmentToDB()) {
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("dateLong", appointmentDate.getTime());
+                        resultIntent.putExtra("description", appointmentDescription);
                     /*
                     resultIntent.putExtra("remeindBoolean", remind);
                     if (remind) resultIntent.putExtra("remeindTime", spinnerReminder.getSelectedItemId());
                     */
-                    setResult(Activity.RESULT_OK, resultIntent);
-                    finish();
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        finish();
+                    }
                 }
                 else {
                     Toast toast = Toast.makeText(getApplicationContext(), validMessage, Toast.LENGTH_LONG);
@@ -290,6 +295,15 @@ public class NewAppointmentActivity extends AppCompatActivity{
         intent = new Intent(this, AppointmentNotify.class);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         alarmManager.cancel(pendingIntent);
+    }
+
+
+    boolean addAppointmentToDB() {
+        boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
+                doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
+                remind,spinnerReminder.getSelectedItemPosition());
+        if (!insertData) Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
+        return insertData;
     }
 
 }
