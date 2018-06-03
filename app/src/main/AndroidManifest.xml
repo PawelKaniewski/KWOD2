@@ -19,29 +19,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Medicine.MedicineActivity"
+        <activity
+            android:name=".Medicine.MedicineActivity"
             android:parentActivityName=".MainActivity">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".Measure.MeasureActivity"
+        <activity
+            android:name=".Measure.MeasureActivity"
             android:parentActivityName=".MainActivity">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".Appointment.AppointmentActivity"
+        <activity
+            android:name=".Appointment.AppointmentActivity"
             android:parentActivityName=".MainActivity">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".Appointment.NewAppointmentActivity"
+        <activity
+            android:name=".Appointment.NewAppointmentActivity"
             android:parentActivityName=".Appointment.AppointmentActivity">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -49,8 +57,11 @@
         </activity>
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />
-        <activity android:name=".Measure.DoMeasureActivity"></activity>
-        <activity android:name=".Appointment.AppointmentNotify"/>
+        <activity android:name=".Measure.DoMeasureActivity" />
+        <activity android:name=".Appointment.AppointmentNotify" />
+        <activity android:name=".Medicine.CustomMedicineDetailsActivity" />
+        <activity android:name=".Medicine.MedicineNotifyActivity" />
+        <activity android:name=".Medicine.EditCustomMedicineActivity"></activity>
     </application>
 
 </manifest>
