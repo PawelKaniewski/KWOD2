@@ -14,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -185,7 +186,9 @@ public class AppointmentActivity extends AppCompatActivity {
     public void loadEvents() {
         Cursor data = healthCareDb.getAppointmentsListContents();
         if (data.getCount() == 0) {
-            Toast.makeText(this, "Brak wizyt w bazie! Dodaj wizytę!", Toast.LENGTH_LONG).show();
+            Toast toast = Toast.makeText(this, "Brak wizyt w bazie!\nDodaj swoją pierwszą wizytę!", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         } else {
             while (data.moveToNext()) {
                 String appointmentDay = data.getString(1);

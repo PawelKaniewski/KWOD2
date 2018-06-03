@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
     private Button deleteBtn;
     private TextView titleDate;
     private List<Event> events;
-    private int[] remindTime = new int[]{1,2,3,4,5,6,7,8,9,10};
+    private int[] remindTime = new int[]{0,0,0,0,0,0,0,0,0,0};
     private RecyclerView eventsRecycle;
     private AppointmentsListBig appointmentsAdapter;
     private int selectedPosition;
@@ -183,11 +184,13 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
             String time = dateFormatTime.format(event.getTimeInMillis());
             Cursor data = healthCareDb.getAppointmentWhereDate(day,time);
             if (data.getCount() == 0) {
-                Toast.makeText(this, "Błąd!", Toast.LENGTH_LONG).show();
+                Toast toast = Toast.makeText(this, "Błąd! Brak wybranej wizyty w bazie!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
                 while (data.moveToNext()) {
-                    boolean remind = Boolean.getBoolean(data.getString(6));
-                    System.out.println("remind"+remind);
+                    boolean remind = false;
+                    if (data.getString(6).equals("true")) remind=true;
                     if (remind) remindTime[i] = data.getInt(7);
                     else remindTime[i] = 10;
                 }

@@ -3,6 +3,7 @@ package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.Ringtone;
@@ -49,6 +50,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
     private Switch switchReminder;
     private Spinner spinnerReminder;
     private boolean remind = false;
+    private boolean remindBefore;
     private Date appointmentDate;
     private String appointmentDay;
     private String appointmentTime;
@@ -65,6 +67,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
     private Cursor eventData;
     private String day;
     private String time;
+    private Context beforeContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +103,21 @@ public class EditAppointmentActivity extends AppCompatActivity{
                 doctorInsert.setText(eventData.getString(3));
                 placeInsert.setText(eventData.getString(4));
                 infoInsert.setText(eventData.getString(5));
-                remind = Boolean.getBoolean(eventData.getString(6));
+                if (eventData.getString(6).equals("true")) {
+                    remind = true;
+                    spinnerReminder.setSelection(eventData.getInt(7));
+                }
+                else {
+                    remind = false;
+                    spinnerReminder.setSelection(5);
+                }
+                remindBefore = remind;
                 switchReminder.setChecked(remind);
                 spinnerReminder.setEnabled(remind);
-                spinnerReminder.setSelection(eventData.getInt(6));
             }
         }
+
+        beforeContext = getApplicationContext();
 
         initValid();
         notifyDate = new Date();
@@ -116,7 +128,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
                 getData();
 
                 if (validDate && validNotifyDate && validDoctor) {
-                    if (remind) turnOnNotify();
+                    turnOnNotify(remind, remindBefore);
 
                     if(deleteAppointmentFromDB() && addAppointmentToDB()) {
                         Intent resultIntent = new Intent();
@@ -244,9 +256,14 @@ public class EditAppointmentActivity extends AppCompatActivity{
     }
 
 
-    void turnOnNotify() {
-        showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
-        scheduler(notifyDate);
+    void turnOnNotify(boolean onOff, boolean onBefore) {
+        //TODO Usuwanie powiaodmienia
+        //if (onBefore) schedulerStop();
+        if (onOff) {
+            showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
+            scheduler(notifyDate);
+        }
+
     }
 
     long setTimeBeforeDate() {
@@ -316,8 +333,8 @@ public class EditAppointmentActivity extends AppCompatActivity{
     }
 
     void schedulerStop() {
-        intent = new Intent(this, AppointmentNotify.class);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent = new Intent(beforeContext, AppointmentNotify.class);
+        pendingIntent = PendingIntent.getActivity(beforeContext, 0, intent, 0);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -325,7 +342,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
     boolean addAppointmentToDB() {
         boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
                 doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
-                remind,spinnerReminder.getSelectedItemPosition());
+                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition());
         if (!insertData) Toast.makeText(this, "Wystapił błąd zapisu edytowanej wizyty", Toast.LENGTH_LONG).show();
         return insertData;
     }

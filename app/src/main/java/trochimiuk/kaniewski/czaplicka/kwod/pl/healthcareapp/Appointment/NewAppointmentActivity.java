@@ -301,8 +301,12 @@ public class NewAppointmentActivity extends AppCompatActivity{
     boolean addAppointmentToDB() {
         boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
                 doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
-                remind,spinnerReminder.getSelectedItemPosition());
-        if (!insertData) Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
+                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition());
+        if (!insertData) {
+            Toast toast = Toast.makeText(this, "Wystapił błąd przy dodawaniu wizyty do bazy danych", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
         return insertData;
     }
 

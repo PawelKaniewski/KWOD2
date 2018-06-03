@@ -81,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addAppointmentToDB(String date, String time, String doctor, String place,
-                                      String info, boolean remind, int beforeTime){
+                                      String info, String remind, int beforeTime){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(APPOINTMENTS_COLUMNS[0], date);
@@ -89,7 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(APPOINTMENTS_COLUMNS[2], doctor);
         contentValues.put(APPOINTMENTS_COLUMNS[3], place);
         contentValues.put(APPOINTMENTS_COLUMNS[4], info);
-        contentValues.put(APPOINTMENTS_COLUMNS[5], String.valueOf(remind));
+        contentValues.put(APPOINTMENTS_COLUMNS[5], remind);
         contentValues.put(APPOINTMENTS_COLUMNS[6], beforeTime);
         long result = db.insert(APPOINTMENTS_TABLE_NAME, null, contentValues);
 
