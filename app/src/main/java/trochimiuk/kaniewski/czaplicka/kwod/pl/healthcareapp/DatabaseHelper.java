@@ -131,4 +131,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete(CUSTOM_MEDICINES_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
     }
 
+    public boolean deleteAppointmentByID(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(APPOINTMENTS_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
+    }
+
 }

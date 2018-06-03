@@ -76,12 +76,6 @@ public class AppointmentActivity extends AppCompatActivity {
 
         eventColor = ContextCompat.getColor(getApplicationContext(), R.color.colorAccent);
 
-        Date today = new Date();
-        Event event = new Event(eventColor, today.getTime(), "description\nlinia\nlinia");
-        calendarView.addEvent(event);
-        event = new Event(eventColor, today.getTime(), "description\n123\n123");
-        calendarView.addEvent(event);
-
         events = calendarView.getEvents(new Date());
         appointmentsAdapter = new AppointmentsList(events);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -153,6 +147,12 @@ public class AppointmentActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appointmentsAdapter.notifyDataSetChanged();
     }
 
     @Override

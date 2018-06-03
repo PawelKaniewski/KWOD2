@@ -54,6 +54,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Appointment.AppointmentActivity" />
         </activity>
+        <activity android:name=".Appointment.EditAppointmentActivity"
+            android:parentActivityName=".Appointment.AppointmentListActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Appointment.AppointmentListActivity" />
+        </activity>
         <activity android:name=".Medicine.NewMedicineActivity" />
         <activity android:name=".Medicine.NewMedicineInDBActivity" />
         <activity android:name=".Measure.DoMeasureActivity"></activity>
