@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String APPOINTMENTS_TABLE_NAME = "APPOINTMENTS";
     private static final String MEASURES_TABLE_NAME = "MEASURES";
     private static final String MEASURE_INFO_TABLE_NAME = "MEASURE_INFO";
-    private static final String[] CUSTOM_MEDICINES_COLUMNS = {"MEDICINE_NAME","MEDICINE_DESCRIPTION","FREQUENCY","PORTION","UNIT"};
+    private static final String[] CUSTOM_MEDICINES_COLUMNS = {"MEDICINE_NAME","MEDICINE_DESCRIPTION","FREQUENCY","PORTION","UNIT","REMIND","REMIND_HOUR","REMIND_MIN"};
     private static final String[] APPOINTMENTS_COLUMNS = {"DATE","TIME","DOCTOR","LOCATION","INFO","REMIND","REMIND_TIME","NOTIFY_ID"};
     private static final String[] MEASURES_COLUMNS = {"MEASURED_VALUE"};
     private static final String[] MEASURE_INFO_COLUMNS = {"NOTIFY","HOUR","MINUTES","LAST_DAY"};
@@ -38,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createMedicinesTable);
 
         String createCustomMedicinesTable = "CREATE TABLE " + CUSTOM_MEDICINES_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " MEDICINE_NAME TEXT, MEDICINE_DESCRIPTION TEXT, FREQUENCY TEXT, PORTION TEXT, UNIT TEXT)";
+                " MEDICINE_NAME TEXT, MEDICINE_DESCRIPTION TEXT, FREQUENCY TEXT, PORTION TEXT, UNIT TEXT, REMIND TEXT, REMIND_HOUR TEXT, REMIND_MIN TEXT)";
         db.execSQL(createCustomMedicinesTable);
 
         String createAppointmentsTable = "CREATE TABLE " + APPOINTMENTS_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -83,11 +83,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addNewCustomMedicineToDB(CustomizedMedicine customizedMedicine){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[0], customizedMedicine.getMedicine().getName());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[1], customizedMedicine.getMedicine().getDescription());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[2], customizedMedicine.getFrequency());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[3], customizedMedicine.getPortion());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[4], customizedMedicine.getUnit());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[5], Boolean.toString(customizedMedicine.isNotOn()));
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[6], customizedMedicine.getHours());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[7], customizedMedicine.getMins());
+
         long result = db.insert(CUSTOM_MEDICINES_TABLE_NAME, null, contentValues);
 
         return result;
@@ -181,12 +186,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[2], customizedMedicine.getFrequency());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[3], customizedMedicine.getPortion());
         contentValues.put(CUSTOM_MEDICINES_COLUMNS[4], customizedMedicine.getUnit());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[5], Boolean.toString(customizedMedicine.isNotOn()));
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[6], customizedMedicine.getHours());
+        contentValues.put(CUSTOM_MEDICINES_COLUMNS[7], customizedMedicine.getMins());
+
         return db.update(CUSTOM_MEDICINES_TABLE_NAME, contentValues, KEY_ROWID + "=" + customizedMedicine.getId(), null) > 0;
     }
 
+    public Cursor selectCustomMedicineName(long id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT "+CUSTOM_MEDICINES_COLUMNS[0]+" FROM "+CUSTOM_MEDICINES_TABLE_NAME+" WHERE "+KEY_ROWID+"="+id,null);
+    }
     public boolean deleteAppointmentByID(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(APPOINTMENTS_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
     }
+
 
 }
