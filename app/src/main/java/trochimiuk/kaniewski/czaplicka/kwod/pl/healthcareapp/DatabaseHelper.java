@@ -86,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addAppointmentToDB(String date, String time, String doctor, String place,
-                                      String info, boolean remind, int beforeTime){
+                                      String info, String remind, int beforeTime){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(APPOINTMENTS_COLUMNS[0], date);
@@ -104,7 +104,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
 
     public Cursor getListContents(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -153,5 +152,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT "+CUSTOM_MEDICINES_COLUMNS[0]+" FROM "+CUSTOM_MEDICINES_TABLE_NAME+" WHERE "+KEY_ROWID+"="+id,null);
     }
+    public boolean deleteAppointmentByID(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(APPOINTMENTS_TABLE_NAME, KEY_ROWID +  "=" + id, null) > 0;
+    }
+
 
 }

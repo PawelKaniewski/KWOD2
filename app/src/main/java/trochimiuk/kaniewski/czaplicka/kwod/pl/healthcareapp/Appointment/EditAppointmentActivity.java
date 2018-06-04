@@ -3,7 +3,9 @@ package trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Appointment;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -11,32 +13,35 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.EventLog;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.DatabaseHelper;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
-public class NewAppointmentActivity extends AppCompatActivity{
+public class EditAppointmentActivity extends AppCompatActivity{
 
     private DatabaseHelper healthCareDb;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormatTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private SimpleDateFormat dateFormatDay = new SimpleDateFormat("dd.MM", Locale.getDefault());
     private Button saveAppointmentBtn;
+    private TextView title;
     private EditText dateInsert;
     private EditText timeInsert;
     private EditText doctorInsert;
@@ -45,6 +50,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
     private Switch switchReminder;
     private Spinner spinnerReminder;
     private boolean remind = false;
+    private boolean remindBefore;
     private Date appointmentDate;
     private String appointmentDay;
     private String appointmentTime;
@@ -58,18 +64,30 @@ public class NewAppointmentActivity extends AppCompatActivity{
     private Date notifyDate;
     private String notifyMessage;
     private String validMessage;
+    private Cursor eventData;
+    private String day;
+    private String time;
+    private Context beforeContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_appointment);
-        Intent intent = getIntent();
+        intent = getIntent();
         healthCareDb = new DatabaseHelper(this);
 
-        dateInsert = (EditText) findViewById(R.id.insertDate);
-        dateInsert.setText(intent.getStringExtra("clickedDate"));
+        //long dateL = intent.getLongExtra("dateLong",-1);
+        day = intent.getStringExtra("day");
+        time = intent.getStringExtra("time");
 
+        title = (TextView) findViewById(R.id.titleAddApp);
+        title.setText("Edytuj termin wizyty w kalendarzu");
+
+        dateInsert = (EditText) findViewById(R.id.insertDate);
+        dateInsert.setText(day);
         timeInsert = (EditText) findViewById(R.id.insertTime);
+        timeInsert.setText(time);
+
         doctorInsert = (EditText) findViewById(R.id.insertDoctor);
         placeInsert = (EditText) findViewById(R.id.insertPlace);
         infoInsert = (EditText) findViewById(R.id.insertInfo);
@@ -77,8 +95,30 @@ public class NewAppointmentActivity extends AppCompatActivity{
         switchReminder = (Switch) findViewById(R.id.switchReminder);
         spinnerReminder = (Spinner) findViewById(R.id.spinnerReminder);
 
-        spinnerReminder.setEnabled(false);
-        spinnerReminder.setSelection(5);
+        eventData = healthCareDb.getAppointmentWhereDate(day,time);
+        if (eventData.getCount() == 0) {
+            Toast.makeText(EditAppointmentActivity.this, "Błąd!", Toast.LENGTH_LONG).show();
+        } else {
+            while (eventData.moveToNext()) {
+                doctorInsert.setText(eventData.getString(3));
+                placeInsert.setText(eventData.getString(4));
+                infoInsert.setText(eventData.getString(5));
+                if (eventData.getString(6).equals("true")) {
+                    remind = true;
+                    spinnerReminder.setSelection(eventData.getInt(7));
+                }
+                else {
+                    remind = false;
+                    spinnerReminder.setSelection(5);
+                }
+                remindBefore = remind;
+                switchReminder.setChecked(remind);
+                spinnerReminder.setEnabled(remind);
+            }
+        }
+
+        beforeContext = getApplicationContext();
+
         initValid();
         notifyDate = new Date();
 
@@ -88,16 +128,12 @@ public class NewAppointmentActivity extends AppCompatActivity{
                 getData();
 
                 if (validDate && validNotifyDate && validDoctor) {
-                    if (remind) turnOnNotify();
+                    turnOnNotify(remind, remindBefore);
 
-                    if(addAppointmentToDB()) {
+                    if(deleteAppointmentFromDB() && addAppointmentToDB()) {
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("dateLong", appointmentDate.getTime());
                         resultIntent.putExtra("description", appointmentDescription);
-                    /*
-                    resultIntent.putExtra("remeindBoolean", remind);
-                    if (remind) resultIntent.putExtra("remeindTime", spinnerReminder.getSelectedItemId());
-                    */
                         setResult(Activity.RESULT_OK, resultIntent);
                         finish();
                     }
@@ -220,9 +256,14 @@ public class NewAppointmentActivity extends AppCompatActivity{
     }
 
 
-    void turnOnNotify() {
-        showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
-        scheduler(notifyDate);
+    void turnOnNotify(boolean onOff, boolean onBefore) {
+        //TODO Usuwanie powiaodmienia
+        //if (onBefore) schedulerStop();
+        if (onOff) {
+            showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
+            scheduler(notifyDate);
+        }
+
     }
 
     long setTimeBeforeDate() {
@@ -292,8 +333,8 @@ public class NewAppointmentActivity extends AppCompatActivity{
     }
 
     void schedulerStop() {
-        intent = new Intent(this, AppointmentNotify.class);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent = new Intent(beforeContext, AppointmentNotify.class);
+        pendingIntent = PendingIntent.getActivity(beforeContext, 0, intent, 0);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -302,12 +343,22 @@ public class NewAppointmentActivity extends AppCompatActivity{
         boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
                 doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
                 Boolean.toString(remind),spinnerReminder.getSelectedItemPosition());
-        if (!insertData) {
-            Toast toast = Toast.makeText(this, "Wystapił błąd przy dodawaniu wizyty do bazy danych", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        }
+        if (!insertData) Toast.makeText(this, "Wystapił błąd zapisu edytowanej wizyty", Toast.LENGTH_LONG).show();
         return insertData;
+    }
+
+    boolean deleteAppointmentFromDB() {
+        boolean deleteOK = false;
+        eventData = healthCareDb.getAppointmentWhereDate(day,time);
+        if (eventData.getCount() == 0) {
+            Toast.makeText(EditAppointmentActivity.this, "Wystąpił błąd usunięcia edytowanej wizyty!", Toast.LENGTH_LONG).show();
+        } else {
+            while (eventData.moveToNext()) {
+                int id = eventData.getInt(0);
+                deleteOK = healthCareDb.deleteAppointmentByID(id);
+            }
+        }
+        return deleteOK;
     }
 
 }

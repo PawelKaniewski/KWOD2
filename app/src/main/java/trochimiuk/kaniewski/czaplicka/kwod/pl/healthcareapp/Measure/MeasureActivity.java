@@ -29,15 +29,17 @@ import java.util.Calendar;
 import java.util.Date;
 
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
+import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.MeasuresListActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 /**
  * By skończyć działanie tej klasy potrzebne jest przechowywanie gdzieś w pliku kilku wartości
  *
- *  tablicy intów o pojemności 5 - private int[] pomiary = new int[5];
+ *  tablicy intów o pojemności 30 - private int[] pomiary = new int[30];
  *  flagi boolean przypominajkaBylaWlaczona
  *  int godzina //uwaga nie pomylic z EditText godziny
  *  int minuta // uwaga jw
+ *  int dzienOstatniegoPomiaru
  *
  * na samym dole nalezy uzupelnic funkcje init, po nadaniu przechowywanych wartosci należy sie modlic zeby dzialalo xd
  * trzeba tez uzupenil funkcje wykonaj zrzut pamieci. Chodzi o to by w tej funkcji zapisac do pliku wymieniona tam wartosci.
@@ -45,14 +47,21 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
  */
 
 public class MeasureActivity extends AppCompatActivity {
-    private final int  ILOSC_POMIAROW = 5;
-    private int[] pomiary = new int[5];
+    private static final int  ILOSC_POMIAROW = 30;
+
+    private final int NORMA_MAX = 150;
+    private final int NORMA_MIN = 75;
+
+    private int dzienOstatniegoPomiaru;
+
+    private static int[] pomiary = new int[ILOSC_POMIAROW];
     private boolean przypominajkaBylaWlaczona = false;
     private GraphView graph;
     private EditText wynik;
     private EditText godziny;
     private EditText minuty;
     private Button dodajPomiar;
+    private Button listaPomiarow;
     private Date d1;
     private Date d2;
     private Date d3;
@@ -73,6 +82,7 @@ public class MeasureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_measure);
 
         dodajPomiar = (Button) findViewById(R.id.dodajPomiar);
+        listaPomiarow = (Button) findViewById(R.id.przyciskListaPomiarow);
         wynik = (EditText) findViewById(R.id.wartoscPomiaru);
         graph = (GraphView) findViewById(R.id.graph);
         cal = Calendar.getInstance();
@@ -97,8 +107,13 @@ public class MeasureActivity extends AppCompatActivity {
                 }
             }
         });
-
-
+        listaPomiarow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent measureListIntent = new Intent(getApplicationContext(),MeasuresListActivity.class);
+                startActivity(measureListIntent);
+            }
+        });
 
 
 
@@ -137,23 +152,48 @@ public class MeasureActivity extends AppCompatActivity {
 
     private void dodajPomiarDoWykresu(int pomiar)
     {
-        for(int i = 0; i<=ILOSC_POMIAROW - 2; i++)
+        if(Calendar.getInstance().get(Calendar.DAY_OF_YEAR) != dzienOstatniegoPomiaru)
         {
-            pomiary[i] = pomiary[i + 1]; //stare pomiary przesuwaja sie o jeden w lewo (najstarszy jest tracony)
+            if (pomiar > NORMA_MAX) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Poziom cukru jest niebezpiecznie wysoki!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            if (pomiar < NORMA_MIN) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Poziom cukru jest niebezpiecznie niski!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+
+            for (int i = 0; i <= ILOSC_POMIAROW - 2; i++) {
+                pomiary[i] = pomiary[i + 1]; //stare pomiary przesuwaja sie o jeden w lewo (najstarszy jest tracony)
+            }
+            pomiary[ILOSC_POMIAROW - 1] = pomiar; //nowy pomiar jest wpisywany na ostatnie miejsce
+
+            LineGraphSeries<DataPoint> nowaSeria = new LineGraphSeries<>(new DataPoint[]{
+//                new DataPoint(d1, pomiary[0]),
+//                new DataPoint(d2, pomiary[1]),
+//                new DataPoint(d3, pomiary[2]),
+//                new DataPoint(d4, pomiary[3]),
+//                new DataPoint(d5, pomiary[4])
+                    new DataPoint(d1, pomiary[ILOSC_POMIAROW - 5]),
+                    new DataPoint(d2, pomiary[ILOSC_POMIAROW - 4]),
+                    new DataPoint(d3, pomiary[ILOSC_POMIAROW - 3]),
+                    new DataPoint(d4, pomiary[ILOSC_POMIAROW - 2]),
+                    new DataPoint(d5, pomiary[ILOSC_POMIAROW - 1])
+
+            });
+            graph.removeAllSeries();
+            graph.addSeries(nowaSeria);
+            graphConfig();
+
+            dzienOstatniegoPomiaru = Calendar.getInstance().get(Calendar.DAY_OF_YEAR) ;
         }
-        pomiary[ILOSC_POMIAROW - 1] = pomiar; //nowy pomiar jest wpisywany na ostatnie miejsce
+        else
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), "Dziś dodano już pomiar!", Toast.LENGTH_LONG);
+            toast.show();
+        }
 
-        LineGraphSeries<DataPoint> nowaSeria = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(d1, pomiary[0]),
-                new DataPoint(d2, pomiary[1]),
-                new DataPoint(d3, pomiary[2]),
-                new DataPoint(d4, pomiary[3]),
-                new DataPoint(d5, pomiary[4])
-
-        });
-        graph.removeAllSeries();
-        graph.addSeries(nowaSeria);
-        graphConfig();
     }
    private  void graphConfig()
     {
@@ -179,11 +219,16 @@ public class MeasureActivity extends AppCompatActivity {
         d5 = cal.getTime();
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(d1, pomiary[0]),
-                new DataPoint(d2, pomiary[1]),
-                new DataPoint(d3, pomiary[2]),
-                new DataPoint(d4, pomiary[3]),
-                new DataPoint(d5, pomiary[4])
+//                new DataPoint(d1, pomiary[0]),
+//                new DataPoint(d2, pomiary[1]),
+//                new DataPoint(d3, pomiary[2]),
+//                new DataPoint(d4, pomiary[3]),
+//                new DataPoint(d5, pomiary[4])
+                new DataPoint(d1, pomiary[ILOSC_POMIAROW - 5]),
+                new DataPoint(d2, pomiary[ILOSC_POMIAROW - 4]),
+                new DataPoint(d3, pomiary[ILOSC_POMIAROW - 3]),
+                new DataPoint(d4, pomiary[ILOSC_POMIAROW - 2]),
+                new DataPoint(d5, pomiary[ILOSC_POMIAROW - 1])
 
         });
         graph.addSeries(series);
@@ -296,6 +341,10 @@ void switchAndSchedulerConfig()
        przelacznikPrzypomnienia.setChecked(false);
    }
 }
+public static int[] getPomiary()
+{
+    return pomiary;
+}
 void init()
 {
 
@@ -303,7 +352,7 @@ void init()
   //  przypominajkaBylaWlaczona = //wartosc z pliku
   //  godzina =
   //  minuta =
-
+  //  dzienOstatniegoPomiaru =
     graphInitialize();
     graphConfig();
     switchAndSchedulerConfig();
@@ -317,6 +366,7 @@ void wykonajZrzutPamieci()
     //  = przypominajkaBylaWlaczona
     //  = godzina
     //  = minuta
+    //  = dzienOstatniegoPomiaru
 }
 
 

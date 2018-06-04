@@ -62,12 +62,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Appointment.AppointmentActivity" />
         </activity>
-        <activity android:name=".Medicine.NewMedicineActivity"
-            android:parentActivityName=".Medicine.MedicineActivity">
-        <!-- The meta-data tag is required if you support API level 15 and lower -->
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Medicine.MedicineActivity" />
+        <activity android:name=".Appointment.EditAppointmentActivity"
+            android:parentActivityName=".Appointment.AppointmentListActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Appointment.AppointmentListActivity" />
         </activity>
         <activity android:name=".Medicine.NewMedicineInDBActivity"
             android:parentActivityName=".Medicine.NewMedicineActivity">
@@ -83,10 +83,17 @@
         <!-- The meta-data tag is required if you support API level 15 and lower -->
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Medicine.NewMedicineActivity" />
+            android:value=".Medicine.MedicineActivity" />
         </activity>
         <activity android:name=".Medicine.MedicineNotifyActivity" />
         <activity android:name=".Medicine.EditCustomMedicineActivity"
+            android:parentActivityName=".Medicine.MedicineActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Medicine.MedicineActivity" />
+        </activity>
+        <activity android:name=".Medicine.NewMedicineActivity"
             android:parentActivityName=".Medicine.MedicineActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data

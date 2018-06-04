@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
     private Button deleteBtn;
     private TextView titleDate;
     private List<Event> events;
-    private int[] remindTime = new int[]{1,2,3,4,5,6,7,8,9,10};
+    private int[] remindTime = new int[]{0,0,0,0,0,0,0,0,0,0};
     private RecyclerView eventsRecycle;
     private AppointmentsListBig appointmentsAdapter;
     private int selectedPosition;
@@ -90,6 +91,51 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
 
         });
 
+
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Event event = events.get(selectedPosition);
+                String day = dateFormatDay.format(event.getTimeInMillis());
+                String time = dateFormatTime.format(event.getTimeInMillis());
+                Cursor data = healthCareDb.getAppointmentWhereDate(day,time);
+                if (data.getCount() == 0) {
+                    Toast.makeText(AppointmentListActivity.this, "Błąd!", Toast.LENGTH_LONG).show();
+                } else {
+                    while (data.moveToNext()) {
+                        int id = data.getInt(0);
+                        if (healthCareDb.deleteAppointmentByID(id)) {
+                            calendarView.removeEvent(event);
+                            appointmentsAdapter.notifyDataSetChanged();
+                            String message = "Usunięto wizytę dnia "+day+" o godzinie "+time;
+                            Toast.makeText(AppointmentListActivity.this, message, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(AppointmentListActivity.this, "Błąd usunięcia!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        });
+
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Event event = events.get(selectedPosition);
+                long dateL = event.getTimeInMillis();
+                String day = dateFormatDay.format(dateL);
+                String time = dateFormatTime.format(dateL);
+
+                Intent appointmentEditIntent = new Intent(getApplicationContext(),EditAppointmentActivity.class);
+                //appointmentEditIntent.putExtra("dateLong",dateL);
+                appointmentEditIntent.putExtra("day",day);
+                appointmentEditIntent.putExtra("time",time);
+                startActivityForResult(appointmentEditIntent, 2);
+            }
+
+        });
+
     }
 
     @Override
@@ -99,6 +145,22 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
             case (1) : {
                 if (resultCode== Activity.RESULT_OK){
                     System.out.println("zapis wydarzenia!");
+                    long dateL = data.getLongExtra("dateLong",-1);
+                    Event event = new Event(eventColor, dateL, data.getStringExtra("description"));
+                    calendarView.addEvent(event);
+                    try {
+                        showListOfEvents(dateFormatDay.parse(titleDate.getText().toString()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+            }
+            case (2) : {
+                if (resultCode== Activity.RESULT_OK){
+                    System.out.println("edycja wydarzenia!");
+                    calendarView.removeEvent(events.get(selectedPosition));
                     long dateL = data.getLongExtra("dateLong",-1);
                     Event event = new Event(eventColor, dateL, data.getStringExtra("description"));
                     calendarView.addEvent(event);
@@ -122,11 +184,13 @@ public class AppointmentListActivity extends AppCompatActivity implements Appoin
             String time = dateFormatTime.format(event.getTimeInMillis());
             Cursor data = healthCareDb.getAppointmentWhereDate(day,time);
             if (data.getCount() == 0) {
-                Toast.makeText(this, "Błąd!", Toast.LENGTH_LONG).show();
+                Toast toast = Toast.makeText(this, "Błąd! Brak wybranej wizyty w bazie!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
                 while (data.moveToNext()) {
-                    boolean remind = Boolean.getBoolean(data.getString(6));
-                    System.out.println("remind"+remind);
+                    boolean remind = false;
+                    if (data.getString(6).equals("true")) remind=true;
                     if (remind) remindTime[i] = data.getInt(7);
                     else remindTime[i] = 10;
                 }
