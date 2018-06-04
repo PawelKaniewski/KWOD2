@@ -18,19 +18,18 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 public class MedicineNotifyActivity extends AppCompatActivity {
 
     private String notifyMessage;
-    private Intent intent;
-    private PendingIntent pendingIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        displayNotification();
-        intent = new Intent(this, MedicineActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Intent intent = getIntent();
+        notifyMessage = intent.getStringExtra("message");
+        generateNotification();
+        Intent medicineIntent = new Intent(getApplicationContext(),MedicineActivity.class);
+        startActivity(medicineIntent);
     }
 
-    void displayNotification()
+    void generateNotification()
     {
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -43,14 +42,14 @@ public class MedicineNotifyActivity extends AppCompatActivity {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Channel")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("HealtCare")
-                .setContentText("Pamiętaj o zażyciu leku!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+                .setContentText(notifyMessage)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, mBuilder.build());
-        Toast toast = Toast.makeText(getApplicationContext(), "Pamiętaj o zażyciu leku!", Toast.LENGTH_LONG);
+
+        Toast toast = Toast.makeText(getApplicationContext(), notifyMessage,Toast.LENGTH_LONG);
         toast.show();
+
     }
 }

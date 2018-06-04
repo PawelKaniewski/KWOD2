@@ -48,9 +48,10 @@ public class MedicineActivity extends AppCompatActivity implements MedicineAdapt
             while (data.moveToNext()) {
                 Medicine medicine = new Medicine(data.getString(1), data.getString(2));
                 CustomizedMedicine customizedMedicine = new CustomizedMedicine(Integer.parseInt(data.getString(0)), medicine,
-                        Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)), data.getString(5),true,8,10);
-                        //data.getString(6),Integer.parseInt(data.getString(7)),Integer.parseInt(data.get));
+                        Integer.parseInt(data.getString(3)), Integer.parseInt(data.getString(4)), data.getString(5),Boolean.parseBoolean(data.getString(6)),
+                        Integer.parseInt(data.getString(7)),Integer.parseInt(data.getString(8)));
                 currentMedicinesList.add(customizedMedicine);
+                Boolean czyTak = Boolean.valueOf(data.getString(6));
                 medicineAdapter.notifyDataSetChanged();
             }
         }
@@ -67,6 +68,9 @@ public class MedicineActivity extends AppCompatActivity implements MedicineAdapt
                 medicineIntent.putExtra("medicineFrequencyEdit",Integer.toString(customMedicine.getFrequency()));
                 medicineIntent.putExtra("medicinePortionEdit",Integer.toString(customMedicine.getPortion()));
                 medicineIntent.putExtra("medicineUnitEdit",customMedicine.getUnit());
+                medicineIntent.putExtra("medicineHours",Integer.toString(customMedicine.getHours()));
+                medicineIntent.putExtra("medicineMins",Integer.toString(customMedicine.getMins()));
+                medicineIntent.putExtra("medicineRemindOn",Boolean.toString(customMedicine.isNotOn()));
                 startActivity(medicineIntent);
             }
         });
@@ -83,7 +87,10 @@ public class MedicineActivity extends AppCompatActivity implements MedicineAdapt
                 medicineIntent.putExtra("medicineFrequency", customMedicine.getFrequency());
                 medicineIntent.putExtra("medicinePortion",customMedicine.getPortion());
                 medicineIntent.putExtra("medicineUnit",customMedicine.getUnit());
-                //medicineIntent.putExtra("medicineName",customMedicine.getMedicine().getName());
+                if(customMedicine.isNotOn()) medicineIntent.putExtra("medicineRemindOn","TAK");
+                else medicineIntent.putExtra("medicineRemindOn","NIE");
+                medicineIntent.putExtra("medicineHours",Integer.toString(customMedicine.getHours()));
+                medicineIntent.putExtra("medicineMins",Integer.toString(customMedicine.getMins()));
 
                 startActivity(medicineIntent);
             }

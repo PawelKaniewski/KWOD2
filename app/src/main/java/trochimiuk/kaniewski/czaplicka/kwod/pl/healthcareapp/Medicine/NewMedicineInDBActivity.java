@@ -45,8 +45,8 @@ public class NewMedicineInDBActivity extends AppCompatActivity {
         boolean insertData = healthCareDb.addData(medicine);
         if (insertData == true) {
             Intent medicineIntent = new Intent(getApplicationContext(), NewMedicineActivity.class);
-            medicineIntent.putExtra("dbSuccess", "Lek dodany do bazy danych!");
             startActivity(medicineIntent);
+            Toast.makeText(this, "Lek został pomyślnie dodany do bazy leków", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
         }

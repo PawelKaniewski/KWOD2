@@ -8,11 +8,13 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class CustomMedicineDetailsActivity extends AppCompatActivity {
 
+
+    private TextView medTakenName, medTakenDes, medTakenF, medTakenP, medTakenU, medTakenNot, medTakenNotIs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_medicine_details);
-        TextView medTakenName, medTakenDes, medTakenF, medTakenP, medTakenU, medTakenNot, medTakenNotIs;
         medTakenName = (TextView) findViewById(R.id.medTakenName);
         medTakenDes = (TextView) findViewById(R.id.medTakenDes);
         medTakenF = (TextView) findViewById(R.id.medTakenF);
@@ -26,7 +28,8 @@ public class CustomMedicineDetailsActivity extends AppCompatActivity {
         medTakenF.setText(Integer.toString(extras.getInt("medicineFrequency")));
         medTakenP.setText(Integer.toString(extras.getInt("medicinePortion")));
         medTakenU.setText(extras.getString("medicineUnit"));
-        //medTakenNot.setText(extras.getString("medicineUnit"));
+        medTakenNotIs.setText(extras.getString("medicineRemindOn"));
+        medTakenNot.setText(extras.getString("medicineHours") + ":" + extras.getString("medicineMins"));
 
     }
 }
