@@ -58,6 +58,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
     private Date notifyDate;
     private String notifyMessage;
     private String validMessage;
+    private int notifyID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,7 @@ public class NewAppointmentActivity extends AppCompatActivity{
                 getData();
 
                 if (validDate && validNotifyDate && validDoctor) {
-                    if (remind) turnOnNotify();
+                    turnOnNotify(remind);
 
                     if(addAppointmentToDB()) {
                         Intent resultIntent = new Intent();
@@ -220,9 +221,12 @@ public class NewAppointmentActivity extends AppCompatActivity{
     }
 
 
-    void turnOnNotify() {
-        showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
-        scheduler(notifyDate);
+    void turnOnNotify(boolean onOff) {
+        if (onOff) {
+            showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
+            scheduler(notifyDate);
+        }
+        else notifyID=100;
     }
 
     long setTimeBeforeDate() {
@@ -282,26 +286,22 @@ public class NewAppointmentActivity extends AppCompatActivity{
 
     void scheduler(Date date)
     {
+        notifyID = (int)System.currentTimeMillis();
         intent = new Intent(this, AppointmentNotify.class);
         intent.putExtra("message",notifyMessage);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.putExtra("notifyID",notifyID);
+        pendingIntent = PendingIntent.getActivity(this, notifyID, intent, 0);
 
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
 
     }
 
-    void schedulerStop() {
-        intent = new Intent(this, AppointmentNotify.class);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        alarmManager.cancel(pendingIntent);
-    }
-
 
     boolean addAppointmentToDB() {
         boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
                 doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
-                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition());
+                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition(),notifyID);
         if (!insertData) {
             Toast toast = Toast.makeText(this, "Wystapił błąd przy dodawaniu wizyty do bazy danych", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);

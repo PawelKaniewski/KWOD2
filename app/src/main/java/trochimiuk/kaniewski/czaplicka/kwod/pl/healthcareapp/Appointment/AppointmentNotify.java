@@ -15,17 +15,22 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 public class AppointmentNotify extends AppCompatActivity {
     private String notifyMessage;
+    private int id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         notifyMessage = intent.getStringExtra("message");
+        id = intent.getIntExtra("notifyID", 1);
+        String date = notifyMessage.substring(29,37);
+        System.out.println("substring = "+date);
         System.out.println("Odczytana: "+notifyMessage);
 
         generateNotification();
-        Intent appointmentIntent = new Intent(getApplicationContext(),AppointmentActivity.class);
-        startActivity(appointmentIntent);
+        Intent appointmentListIntent = new Intent(getApplicationContext(),AppointmentListActivity.class);
+        appointmentListIntent.putExtra("clickedDate",date);
+        startActivity(appointmentListIntent);
     }
 
     void generateNotification()
@@ -45,11 +50,7 @@ public class AppointmentNotify extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(1, mBuilder.build());
+        notificationManager.notify(id, mBuilder.build());
 
-        /*
-        Toast toast = Toast.makeText(getApplicationContext(), "Wykonaj pomiar cukru", Toast.LENGTH_LONG);
-        toast.show();
-        */
     }
 }

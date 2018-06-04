@@ -9,22 +9,21 @@
 
     <Button
         android:id="@+id/dodajPomiar"
-        android:background="@drawable/bg_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/bg_btn"
+        android:padding="8dp"
         android:text="Dodaj pomiar"
         android:textColor="#FFF"
-        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.925"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.751" />
 
@@ -35,22 +34,24 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Przypomnienie  "
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.925" />
+        app:layout_constraintVertical_bias="0.934" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
         android:layout_width="match_parent"
-        android:layout_height="279dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/dodajPomiar"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/tytul"
@@ -62,11 +63,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:clickable="false"
-        android:cursorVisible="false"
         android:ems="10"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:inputType="textPersonName"
         android:singleLine="false"
         android:text="Poziom cukru na przestrzeni ostatnich dni"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -79,19 +78,18 @@
 
     <EditText
         android:id="@+id/wartoscPomiaru"
-        android:layout_width="184dp"
+        android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/dodajPomiar"
-        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintEnd_toStartOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.742" />
@@ -99,7 +97,9 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +108,7 @@
 
         <EditText
             android:id="@+id/hours"
-            android:layout_width="80dp"
+            android:layout_width="60dp"
             android:layout_height="51dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
@@ -124,8 +124,8 @@
 
         <EditText
             android:id="@+id/minutes"
-            android:layout_width="80dp"
-            android:layout_height="51dp"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
@@ -145,10 +145,10 @@
             android:id="@+id/editText9"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:clickable="false"
             android:ems="10"
@@ -169,16 +169,37 @@
         android:id="@+id/przyciskListaPomiarow"
         android:layout_width="146dp"
         android:layout_height="36dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="32dp"
         android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/add_btn"
         android:text="Lista pomiarów"
+        android:textColor="#FFF"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/przelacznikPrzypomnienia"
         app:layout_constraintEnd_toEndOf="@+id/wartoscPomiaru"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wartoscPomiaru" />
+        app:layout_constraintTop_toBottomOf="@+id/wartoscPomiaru"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:text="mg/dL"
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dodajPomiar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/wartoscPomiaru"
+        app:layout_constraintTop_toBottomOf="@+id/graph"
+        app:layout_constraintVertical_bias="0.146" />
 
 </android.support.constraint.ConstraintLayout>

@@ -69,14 +69,44 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Appointment.AppointmentListActivity" />
         </activity>
-        <activity android:name=".Medicine.NewMedicineActivity" />
-        <activity android:name=".Medicine.NewMedicineInDBActivity" />
+        <activity android:name=".Medicine.NewMedicineActivity"
+            android:parentActivityName=".Medicine.MedicineActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Medicine.MedicineActivity" />
+        </activity>
+        <activity android:name=".Medicine.NewMedicineInDBActivity"
+            android:parentActivityName=".Medicine.NewMedicineActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Medicine.NewMedicineActivity" />
+        </activity>
+        <activity android:name=".Medicine.CustomMedicineDetailsActivity"
+            android:parentActivityName=".Medicine.MedicineActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Medicine.MedicineActivity" />
+        </activity>
+        <activity android:name=".Medicine.EditCustomMedicineActivity"
+            android:parentActivityName=".Medicine.MedicineActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Medicine.MedicineActivity" />
+        </activity>
+        <activity android:name=".Measure.MeasuresListActivity"
+            android:parentActivityName=".Measure.MeasureActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Measure.MeasureActivity" />
+        </activity>
         <activity android:name=".Measure.DoMeasureActivity" />
         <activity android:name=".Appointment.AppointmentNotify" />
-        <activity android:name=".Medicine.CustomMedicineDetailsActivity" />
         <activity android:name=".Medicine.MedicineNotifyActivity" />
-		<activity android:name=".MeasuresListActivity"/>
-        <activity android:name=".Medicine.EditCustomMedicineActivity"></activity>
 		
     </application>
 

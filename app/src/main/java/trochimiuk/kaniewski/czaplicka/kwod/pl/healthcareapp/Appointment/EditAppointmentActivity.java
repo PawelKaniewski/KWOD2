@@ -67,7 +67,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
     private Cursor eventData;
     private String day;
     private String time;
-    private Context beforeContext;
+    private int notifyID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
         setContentView(R.layout.activity_new_appointment);
         intent = getIntent();
         healthCareDb = new DatabaseHelper(this);
+        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
         //long dateL = intent.getLongExtra("dateLong",-1);
         day = intent.getStringExtra("day");
@@ -114,10 +115,9 @@ public class EditAppointmentActivity extends AppCompatActivity{
                 remindBefore = remind;
                 switchReminder.setChecked(remind);
                 spinnerReminder.setEnabled(remind);
+                notifyID = eventData.getInt(8);
             }
         }
-
-        beforeContext = getApplicationContext();
 
         initValid();
         notifyDate = new Date();
@@ -257,12 +257,16 @@ public class EditAppointmentActivity extends AppCompatActivity{
 
 
     void turnOnNotify(boolean onOff, boolean onBefore) {
-        //TODO Usuwanie powiaodmienia
-        //if (onBefore) schedulerStop();
+        //TODO Usuwanie powiadomienia
+        if (onBefore && notifyID!=100) {
+            schedulerStop(notifyID);
+            showNotify("Wyłączono przypomnienie o wizycie u lekarza");
+        }
         if (onOff) {
             showNotify("Uruchomiono przypomnienie o wizycie u lekarza");
             scheduler(notifyDate);
         }
+        else notifyID=100;
 
     }
 
@@ -323,18 +327,20 @@ public class EditAppointmentActivity extends AppCompatActivity{
 
     void scheduler(Date date)
     {
+        notifyID = (int)System.currentTimeMillis();
         intent = new Intent(this, AppointmentNotify.class);
         intent.putExtra("message",notifyMessage);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.putExtra("notifyID",notifyID);
+        pendingIntent = PendingIntent.getActivity(this, notifyID, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        //alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
 
     }
 
-    void schedulerStop() {
-        intent = new Intent(beforeContext, AppointmentNotify.class);
-        pendingIntent = PendingIntent.getActivity(beforeContext, 0, intent, 0);
+    void schedulerStop(int id) {
+        intent = new Intent(this, AppointmentNotify.class);
+        pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -342,7 +348,7 @@ public class EditAppointmentActivity extends AppCompatActivity{
     boolean addAppointmentToDB() {
         boolean insertData = healthCareDb.addAppointmentToDB(appointmentDay,appointmentTime,
                 doctorInsert.getText().toString(),placeInsert.getText().toString(),infoInsert.getText().toString(),
-                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition());
+                Boolean.toString(remind),spinnerReminder.getSelectedItemPosition(),notifyID);
         if (!insertData) Toast.makeText(this, "Wystapił błąd zapisu edytowanej wizyty", Toast.LENGTH_LONG).show();
         return insertData;
     }

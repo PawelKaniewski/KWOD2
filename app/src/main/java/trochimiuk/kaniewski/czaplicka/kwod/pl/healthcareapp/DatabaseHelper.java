@@ -16,8 +16,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String MEDICINES_TABLE_NAME = "MEDICINES";
     private static final String CUSTOM_MEDICINES_TABLE_NAME = "CUSTOM_MEDICINES";
     private static final String APPOINTMENTS_TABLE_NAME = "APPOINTMENTS";
+    private static final String MEASURES_TABLE_NAME = "MEASURES";
+    private static final String MEASURE_INFO_TABLE_NAME = "MEASURE_INFO";
     private static final String[] CUSTOM_MEDICINES_COLUMNS = {"MEDICINE_NAME","MEDICINE_DESCRIPTION","FREQUENCY","PORTION","UNIT"};
-    private static final String[] APPOINTMENTS_COLUMNS = {"DATE","TIME","DOCTOR","LOCATION","INFO","REMIND", "REMIND_TIME"};
+    private static final String[] APPOINTMENTS_COLUMNS = {"DATE","TIME","DOCTOR","LOCATION","INFO","REMIND","REMIND_TIME","NOTIFY_ID"};
+    private static final String[] MEASURES_COLUMNS = {"MEASURED_VALUE"};
+    private static final String[] MEASURE_INFO_COLUMNS = {"NOTIFY","HOUR","MINUTES","LAST_DAY"};
     public static final String COL1 = "ID";
     public static final String COL2 = "NAME";
     public static final String COL3 = "DESCRIPTION";
@@ -38,8 +42,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createCustomMedicinesTable);
 
         String createAppointmentsTable = "CREATE TABLE " + APPOINTMENTS_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " DATE TEXT, TIME TEXT, DOCTOR TEXT, LOCATION TEXT, INFO TEXT, REMIND TEXT, REMIND_TIME INT)";
+                " DATE TEXT, TIME TEXT, DOCTOR TEXT, LOCATION TEXT, INFO TEXT, REMIND TEXT, REMIND_TIME INT, NOTIFY_ID INT)";
         db.execSQL(createAppointmentsTable);
+
+        String createMeasuresTable = "CREATE TABLE " + MEASURES_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " MEASURED_VALUE INT)";
+        db.execSQL(createMeasuresTable);
+
+        String createMeasureInfoTable = "CREATE TABLE " + MEASURE_INFO_TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " NOTIFY TEXT, HOUR INT, MINUTES INT, LAST_DAY INT)";
+        db.execSQL(createMeasureInfoTable);
 
     }
 
@@ -48,6 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MEDICINES_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOM_MEDICINES_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + APPOINTMENTS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MEASURES_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MEASURE_INFO_TABLE_NAME);
         onCreate(db);
     }
 
@@ -81,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addAppointmentToDB(String date, String time, String doctor, String place,
-                                      String info, String remind, int beforeTime){
+                                      String info, String remind, int beforeTime, int notifyID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(APPOINTMENTS_COLUMNS[0], date);
@@ -91,7 +105,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(APPOINTMENTS_COLUMNS[4], info);
         contentValues.put(APPOINTMENTS_COLUMNS[5], remind);
         contentValues.put(APPOINTMENTS_COLUMNS[6], beforeTime);
+        contentValues.put(APPOINTMENTS_COLUMNS[7], notifyID);
         long result = db.insert(APPOINTMENTS_TABLE_NAME, null, contentValues);
+
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean addMeasureToDB(int value){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MEASURES_COLUMNS[0], value);
+        long result = db.insert(MEASURES_TABLE_NAME, null, contentValues);
+
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean saveMeasureInfoToDB(String notify, int hour, int minutes, int lastDay){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(MEASURE_INFO_TABLE_NAME, KEY_ROWID +  "=" + 0, null);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MEASURE_INFO_COLUMNS[0], notify);
+        contentValues.put(MEASURE_INFO_COLUMNS[1], hour);
+        contentValues.put(MEASURE_INFO_COLUMNS[2], minutes);
+        contentValues.put(MEASURE_INFO_COLUMNS[3], lastDay);
+        long result = db.insert(MEASURE_INFO_TABLE_NAME, null, contentValues);
 
         if (result == -1) {
             return false;

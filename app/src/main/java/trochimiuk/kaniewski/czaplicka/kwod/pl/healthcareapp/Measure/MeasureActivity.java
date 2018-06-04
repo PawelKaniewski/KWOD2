@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -28,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.Measure.DoMeasureActivity;
-import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.MeasuresListActivity;
 import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 
 /**
@@ -49,8 +48,8 @@ import trochimiuk.kaniewski.czaplicka.kwod.pl.healthcareapp.R;
 public class MeasureActivity extends AppCompatActivity {
     private static final int  ILOSC_POMIAROW = 30;
 
-    private final int NORMA_MAX = 150;
-    private final int NORMA_MIN = 75;
+    private final int NORMA_MAX = 115;
+    private final int NORMA_MIN = 70;
 
     private int dzienOstatniegoPomiaru;
 
@@ -156,10 +155,12 @@ public class MeasureActivity extends AppCompatActivity {
         {
             if (pomiar > NORMA_MAX) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Poziom cukru jest niebezpiecznie wysoki!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
             if (pomiar < NORMA_MIN) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Poziom cukru jest niebezpiecznie niski!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
 
@@ -191,6 +192,7 @@ public class MeasureActivity extends AppCompatActivity {
         else
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Dziś dodano już pomiar!", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
 
@@ -256,7 +258,7 @@ public class MeasureActivity extends AppCompatActivity {
             {
                 godzina = Integer.parseInt(godziny.getText().toString());
                 minuta = Integer.parseInt(minuty.getText().toString());
-                wyswietlPowiadomienie("Uruchomiono przypominajke");
+                wyswietlPowiadomienie("Uruchomiono przypomnienie o codziennym pomiarze");
                 scheduler(godzina, minuta);
             }
         }
